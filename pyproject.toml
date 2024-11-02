@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Outdoor sports planner application that helps to plan sports given weather and airquality"
 authors = ["Christian <christianresch@mailbox.org>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "3.10.0"
