@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "outdoor-sports-planner"
+version = "0.1.0"
+description = "Outdoor sports planner application that helps to plan sports given weather and airquality"
+authors = ["Christian <christianresch@mailbox.org>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.0"
+requests = "^2.32.3"
+pytest = "^8.3.3"
+fastapi = {extras = ["standard"], version = "^0.115.4"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
