@@ -1,5 +1,5 @@
 # Ignore the outline presentation
-ProductOutline_Architecture.pptx
+*.pptx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
