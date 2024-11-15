@@ -10,17 +10,21 @@ app = FastAPI()
 async def main():
     return '''
     
+    <h1> Outdoor sports planner</h1>
+    <h2> Get the best outdoor sport days based on air quality</h2>
+    
     Enter your location here: <br>
-    <br>
-    (Note: This is just a dummy website so far and won't actually give you real information)<br>
     <br>
      <form action="/dummy_air_quality_data" method="POST">
          <input name="user_input">
          <input type="submit" value="Submit!">
      </form>
+    (Note: This is just a dummy website so far and won't actually give you real information)<br>
+    
      '''
 @app.post("/dummy_air_quality_data")
 async def dummy_air_quality_data(user_input: str = Form(...)):
+    user_input = user_input.capitalize()
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -55,7 +59,7 @@ async def dummy_air_quality_data(user_input: str = Form(...)):
     <body>
         <h1> Your outdoor sports prediction for {user_input}</h1>
         You are in <b>{user_input}</b>. Today is 15 November 2024. The best day for outdoor sport in the next couple days is <b>Sunday, 17 November 2024</b>. 
-        <h1>PM2.5 Data (Mock data taken from Bogota on 15 Nov)</h1>
+        <h1>PM<sub>2.5</sub> Data (Mock data taken from Bogota on 15 Nov)</h1>
         <table>
             <thead>
                 <tr>
@@ -79,10 +83,10 @@ async def dummy_air_quality_data(user_input: str = Form(...)):
                     <td>46</td>
                 </tr>
                 <tr>
-                    <td>2024-11-17</td>
-                    <td>55</td>
-                    <td>81</td>
-                    <td>18</td>
+                    <td><b>2024-11-17</b></td>
+                    <td><b>55</b></td>
+                    <td><b>81</b></td>
+                    <td><b>18</b></td>
                 </tr>
                 <tr>
                     <td>2024-11-18</td>
@@ -98,6 +102,8 @@ async def dummy_air_quality_data(user_input: str = Form(...)):
                 </tr>
             </tbody>
         </table>
+        Note: PM<sub>2.5</sub> measures particle pollution of material with less than 2.5 micrometers (µm) in diameter, e.g. combustion particles. They are generally seen as the most hazardous particle pollution.<br>
+        Source: OAB - El Observatorio Ambiental de Bogota via <a href=aqcin.org>AQCIN</a>
     </body>
     </html>
     """
