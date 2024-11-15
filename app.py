@@ -53,8 +53,8 @@ async def dummy_air_quality_data(user_input: str = Form(...)):
         </style>
     </head>
     <body>
-        <h1> Your outdoor sports prediction</h1>
-        You are in {user_input}. Today is 15 November 2024. The best day for outdoor sport in the next couple days is <b>Sunday, 17 November 2024</b>. 
+        <h1> Your outdoor sports prediction for {user_input}</h1>
+        You are in <b>{user_input}</b>. Today is 15 November 2024. The best day for outdoor sport in the next couple days is <b>Sunday, 17 November 2024</b>. 
         <h1>PM2.5 Data (Mock data taken from Bogota on 15 Nov)</h1>
         <table>
             <thead>
