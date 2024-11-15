@@ -13,6 +13,9 @@ app = FastAPI()
 @app.get("/", response_class=HTMLResponse)
 async def main():
     return '''
+    
+    Enter your text here:
+    
      <form action="/echo_user_input" method="POST">
          <input name="user_input">
          <input type="submit" value="Submit!">
