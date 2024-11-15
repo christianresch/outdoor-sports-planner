@@ -103,7 +103,8 @@ async def dummy_air_quality_data(user_input: str = Form(...)):
             </tbody>
         </table>
         Note: PM<sub>2.5</sub> measures particle pollution of material with less than 2.5 micrometers (µm) in diameter, e.g. combustion particles. They are generally seen as the most hazardous particle pollution.<br>
-        Source: OAB - El Observatorio Ambiental de Bogota via <a href=aqcin.org>AQCIN</a>
+        Source: OAB - El Observatorio Ambiental de Bogota via <a href=aqcin.org>AQCIN</a><br>
+        <b>Note for CU Boulder MSCS CSCA 5028: If you wonder, the user input is echoed in the header and first sentence!
     </body>
     </html>
     """
