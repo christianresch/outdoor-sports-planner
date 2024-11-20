@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from requests.exceptions import Timeout
 import pytest
-from components.data_collectors.weather_data_collector import WeatherDataCollector
+from components.data_collectors.src.weather_data_collector import WeatherDataCollector
 
 @pytest.fixture
 def mock_requests_get():
