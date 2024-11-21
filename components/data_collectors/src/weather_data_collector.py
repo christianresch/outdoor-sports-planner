@@ -14,7 +14,7 @@ class WeatherDataCollector:
         retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
         self.openmeteo = openmeteo_requests.Client(session=retry_session)
 
-    def get_weather_data(self, latitude, longitude, current="temperature_2m", daily=None):
+    def get_weather_data(self, latitude: int, longitude: int, current: str="temperature_2m", daily: [str]=None) -> float:
         # Make sure all required weather variables are listed here
         # The order of variables in hourly or daily is important to assign them correctly below
         url = "https://api.open-meteo.com/v1/forecast"
@@ -23,6 +23,7 @@ class WeatherDataCollector:
             "longitude": longitude,
             "current": current
         }
+        #TODO Openmeteo recommends to add timezones for forecasts
         if daily is not None:
             params['daily'] = daily
 
