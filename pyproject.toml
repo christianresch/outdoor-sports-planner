@@ -13,6 +13,10 @@ pytest = "^8.3.3"
 fastapi = {extras = ["standard"], version = "^0.115.4"}
 uvicorn = "^0.32.0"
 python-multipart = "^0.0.17"
+openmeteo-requests = "^1.3.0"
+requests-cache = "^1.2.1"
+pandas = "^2.2.3"
+retry-requests = "^2.0.0"
 
 
 [build-system]

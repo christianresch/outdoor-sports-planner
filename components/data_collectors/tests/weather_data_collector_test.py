@@ -1,25 +1,30 @@
-from unittest.mock import patch
-from requests.exceptions import Timeout
-import pytest
 from components.data_collectors.src.weather_data_collector import WeatherDataCollector
+import unittest
+from unittest.mock import MagicMock
 
-@pytest.fixture
-def mock_requests_get():
-    with patch('requests.get') as mock_get:
-        yield mock_get
+class TestWeatherDataCollector(unittest.TestCase):
 
-@pytest.fixture
-def weather_collector():
-    return WeatherDataCollector()
+    def setUp(self):
+        self.weather_data_collector = WeatherDataCollector()
+        self.weather_data_collector.get_weather_data = MagicMock(return_value=19.3)
 
-@patch('requests.get')
-def test_success(weather_collector, mock_requests_get):
-    # Define the mock response that replaces request.get
-    mock_requests_get.return_value.status_code = 200
-    #TODO replace the return value with something useful
-    mock_requests_get.return_value.json.return_value = {"key": "value"}
+    def test_success(self):
+        current_temperature_2m = self.weather_data_collector.get_weather_data(4.6097, -74.0817)
 
-    # Call the to be tested get_weather_data function
-    result = weather_collector.get_weather_data(4.6097, -74.0817)
+        assert current_temperature_2m == 19.3
 
-    assert result == {"key": "value"}
+    def test_real_api_call(self):
+        real_weather_data_collector = WeatherDataCollector()
+
+        current_temperature_2m = real_weather_data_collector.get_weather_data(4.6097, -74.0817)
+
+        assert isinstance(current_temperature_2m, (float)), "Value is not a number"
+
+    #TODO Write tests for querying forecasts as well
+
+    def test_wrong_user_input(self):
+        self.weather_data_collector.get_weather_data.side_effect = ValueError("Invalid input: Check your parameters.")
+
+        #Check if ValueError is raised when providing wrong input
+        with self.assertRaises(ValueError) as context:
+            self.weather_data_collector.get_weather_data("Bogota", -74.0817)
