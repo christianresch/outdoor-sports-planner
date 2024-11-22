@@ -7,6 +7,7 @@ class CoordinatesCollector():
         pass
 
     def get_coordinates(self, city_name: str) -> [Tuple[float, float]]:
+        # API Documentation here: https://open-meteo.com/en/docs/geocoding-api
         if not isinstance(city_name, str):
             raise ValueError("City not found. Check your input.")
 
