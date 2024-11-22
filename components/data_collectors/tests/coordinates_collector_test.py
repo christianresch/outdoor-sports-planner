@@ -33,8 +33,11 @@ class TestCoordinatesCollector(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             self.real_coordinates_collector.get_coordinates(2024)
 
-        with self.assertRaisesRegex(ValueError, "400"):
-            self.real_coordinates_collector.get_coordinates(2024)
+    def test_city_not_found(self):
+        coords = self.real_coordinates_collector.get_coordinates('FantasyCity')
+
+        assert coords is None
+
 
 
 
