@@ -1,0 +1,15 @@
+from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+# Define WeatherRecord Table
+class WeatherRecord(Base):
+    __tablename__ = 'weather_records'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    city_name = Column(String, nullable=True)
+    latitude = Column(Float, nullable=False)
+    longitude = Column(Float, nullable=False)
+    temperature = Column(Float, nullable=False)
+    recorded_at = Column(DateTime, nullable=False)
