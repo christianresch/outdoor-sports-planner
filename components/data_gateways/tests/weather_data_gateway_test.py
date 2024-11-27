@@ -1,4 +1,5 @@
-#TODO Find out what tests a data gateway needs!
+from components.data_gateways.src.weather_data_gateway import WeatherDataGateway
+import sqlalchemy
 
 def test_database_connection():
     gateway = WeatherDataGateway("sqlite:///:memory:")
