@@ -90,10 +90,48 @@ def test_get_weather_data_by_city(gateway):
 
     results = gateway.get_weather_data_by_city(city="Berlin")
 
+    assert results is not None
     assert len(results) == 1
-    assert results[0].city == "Berlin"
+    assert results[0].temperature == 20.5
 
-    #TODO Add additional tests for the other getter methods
+def test_get_weather_data_by_coords(gateway):
+    with Session(gateway.engine) as session:
+        # Insert mock data directly
+        record = WeatherRecord(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5,
+                               recorded_at=datetime.utcnow())
+        session.add(record)
+        session.commit()
+
+    results = gateway.get_weather_data_by_coords(latitude=52.52, longitude=13.405)
+
+    assert results is not None
+    assert len(results) == 1
+    assert results[0].temperature == 20.5
+
+def test_get_weather_data_by_id(gateway):
+    with Session(gateway.engine) as session:
+        # Insert mock data directly
+        record = WeatherRecord(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5,
+                               recorded_at=datetime.utcnow())
+        session.add(record)
+        session.commit()
+        generated_id = record.id
+
+    results = gateway.get_weather_data_by_id(id=generated_id)
+
+    assert results is not None
+    assert len(results) == 1
+
+    # Use the gateway to retrieve by ID
+    retrieved_record = results[0]
+
+    # Assert correctness
+    assert retrieved_record is not None
+    assert retrieved_record.city == "Berlin"
+    assert retrieved_record.latitude == 52.52
+    assert retrieved_record.longitude == 13.405
+    assert retrieved_record.temperature == 20.5
+    assert retrieved_record.id == generated_id
 
 def test_query_empty_database(gateway):
     data = gateway.get_weather_data_by_city("NonExistentCity")
@@ -115,9 +153,8 @@ def test_delete_weather_data(gateway):
 
 def test_transaction_handling(gateway):
     try:
-        with Session(gateway.engine) as session:
-            gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5)
-            raise RuntimeError("Force rollback")
+        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0)
+        raise RuntimeError("Force rollback")
     except RuntimeError:
         pass
 
