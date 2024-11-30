@@ -12,7 +12,7 @@ class WeatherRecord(Base):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     temperature = Column(Float, nullable=False)
-    recorded_at = Column(DateTime, nullable=False)
+    recorded_at = Column(DateTime(timezone=True), nullable=False)
 
     # Add a unique constraint for city and recorded_at
     __table_args__ = (
