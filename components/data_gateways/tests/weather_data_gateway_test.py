@@ -59,11 +59,11 @@ def test_unique_city_datetime_constraint(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
 
     # Insert the first record
-    gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5, recorded_at=test_datetime)
+    gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5, recorded_at=test_datetime, raise_integrity_error=True)
 
     # Attempt to insert a second record with the same city and datetime
     try:
-        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0, recorded_at=test_datetime)
+        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0, recorded_at=test_datetime, raise_integrity_error=True)
         assert False, "Expected an IntegrityError due to duplicate city and recorded_at"
     except IntegrityError:
         pass  # Test passes, the constraint was enforced
@@ -149,9 +149,9 @@ def test_delete_weather_data(gateway):
 
 def test_transaction_handling(gateway):
     try:
-        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0)
-        raise RuntimeError("Force rollback")
+        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0, raise_runtime_error=True)
     except RuntimeError:
+        print("Caught RuntimeError in test.")
         pass
 
     data = gateway.get_weather_data_by_city("Berlin")
