@@ -117,25 +117,21 @@ def test_get_weather_data_by_id(gateway):
         session.commit()
         generated_id = record.id
 
-    results = gateway.get_weather_data_by_id(id=generated_id)
+    result = gateway.get_weather_data_by_id(id=generated_id)
 
-    assert results is not None
-    assert len(results) == 1
-
-    # Use the gateway to retrieve by ID
-    retrieved_record = results[0]
+    assert result is not None
 
     # Assert correctness
-    assert retrieved_record is not None
-    assert retrieved_record.city == "Berlin"
-    assert retrieved_record.latitude == 52.52
-    assert retrieved_record.longitude == 13.405
-    assert retrieved_record.temperature == 20.5
-    assert retrieved_record.id == generated_id
+    assert result is not None
+    assert result.city == "Berlin"
+    assert result.latitude == 52.52
+    assert result.longitude == 13.405
+    assert result.temperature == 20.5
+    assert result.id == generated_id
 
 def test_query_empty_database(gateway):
     data = gateway.get_weather_data_by_city("NonExistentCity")
-    assert data is None
+    assert len(data) == 0
 
 def test_delete_weather_data(gateway):
     with Session(gateway.engine) as session:
@@ -160,3 +156,5 @@ def test_transaction_handling(gateway):
 
     data = gateway.get_weather_data_by_city("Berlin")
     assert data is None  # Ensure data wasn't committed
+
+#TODO Add test for proper timezone handling
