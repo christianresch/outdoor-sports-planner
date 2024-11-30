@@ -33,7 +33,6 @@ class WeatherDataGateway():
 
         with Session(self.engine) as session:
             try:
-                print("Adding record to session...")
                 session.add(record)
 
                 #Hook for testing purposes
@@ -41,17 +40,13 @@ class WeatherDataGateway():
                     raise RuntimeError("Simulated error during transaction")
 
                 session.commit()
-                print("Record committed.")
             except IntegrityError as e:
-                print("Rolling back due to IntegrityError")
                 session.rollback()
                 if raise_integrity_error:
-                    print(f"Exception type: {type(e)}")
                     raise e
                 else:
                     raise ValueError(f"Duplicate entry for city '{record.city}' and datetime '{record.recorded_at}'")
             except RuntimeError as e:
-                print("Rolling back due to RuntimeError")
                 session.rollback()
                 raise e # Re-raise the exception to ensure it propagates
 
