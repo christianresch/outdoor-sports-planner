@@ -11,6 +11,7 @@ class WeatherDataGateway():
         self.engine = create_engine(db_path, echo=True)
         self.db_path = db_path
 
+    #TODO Work out the best way to setup the database, most likely as part of the CI/CD pipeline or using something like alembic.
     def create(self):
         WeatherRecord.metadata.create_all(self.engine)
 

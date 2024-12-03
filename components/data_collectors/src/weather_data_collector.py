@@ -7,7 +7,6 @@ from retry_requests import retry
 
 class WeatherDataCollector:
 
-
     def __init__(self):
         # Setup the Open-Meteo API client with cache and retry on error
         cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
@@ -24,6 +23,7 @@ class WeatherDataCollector:
             "current": current
         }
         #TODO Openmeteo recommends to add timezones for forecasts
+
         if daily is not None:
             params['daily'] = daily
 
@@ -43,7 +43,7 @@ class WeatherDataCollector:
 
         return current_temperature_2m
 
-        #TODO write return values for daily predicitions
+        #TODO write return values for daily predicitions (and not just current temperature)
 
 
 
