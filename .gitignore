@@ -1,6 +1,9 @@
 # Ignore the outline presentation
 *.pptx
 
+# Ignore example data
+aqicn_example_api_response.rtf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
