@@ -38,7 +38,10 @@ async def dummy_air_quality_data(user_input: str = Form(...)):
     """
     return Response(content=html_content, media_type='text/html')
 
+#TODO Add /health-check endpoint, see Production Monitoring Video and a metrics endpoint (Prometheus in the example)
+
 if __name__ == "__main__":
+    #TODO Aggregate this into workers and tasks (see REST API video in the course)
     weather_collector = WeatherDataCollector()
     coordinates_collector = CoordinatesCollector()
 

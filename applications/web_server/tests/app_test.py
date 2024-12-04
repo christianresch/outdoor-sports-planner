@@ -17,3 +17,5 @@ def test_multiple_requests():
         assert response.status_code == 200
 
 #TODO Add further tests for new sub pages
+
+#TODO Add test for metrics, see Production Monitoring Video (in the video they do this through the Meters library in Java
