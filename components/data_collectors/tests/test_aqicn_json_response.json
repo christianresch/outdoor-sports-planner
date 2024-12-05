@@ -1,0 +1,94 @@
+{
+    "aqi": 74,
+    "idx": 1437,
+    "attributions": [
+      {
+        "url": "https://china.usembassy-china.org.cn/embassy-consulates/shanghai/air-quality-monitor-stateair/",
+        "name": "U.S. Consulate Shanghai Air Quality Monitor"
+      },
+      {
+        "url": "https://sthj.sh.gov.cn/",
+        "name": "Shanghai Environment Monitoring Center(上海市环境监测中心)"
+      },
+      {
+        "url": "http://106.37.208.233:20035/emcpublish/",
+        "name": "China National Urban air quality real-time publishing platform (全国城市空气质量实时发布平台)"
+      },
+      {
+        "url": "https://waqi.info/",
+        "name": "World Air Quality Index Project"
+      }
+    ],
+    "city": {
+      "geo": [31.2047372, 121.4489017],
+      "name": "Shanghai (上海)",
+      "url": "https://aqicn.org/city/shanghai",
+      "location": ""
+    },
+    "dominentpol": "pm25",
+    "iaqi": {
+      "co": { "v": 4.9 },
+      "h": { "v": 87 },
+      "no2": { "v": 8.3 },
+      "o3": { "v": 35.4 },
+      "p": { "v": 1023 },
+      "pm10": { "v": 28 },
+      "pm25": { "v": 74 },
+      "so2": { "v": 5.1 },
+      "t": { "v": 9 },
+      "w": { "v": 2 }
+    },
+    "time": {
+      "s": "2024-12-05 05:00:00",
+      "tz": "+08:00",
+      "v": 1733374800,
+      "iso": "2024-12-05T05:00:00+08:00"
+    },
+    "forecast": {
+      "daily": {
+        "o3": [
+          {"avg": 2, "day": "2024-12-03", "max": 3, "min": 2},
+          {"avg": 2, "day": "2024-12-04", "max": 3, "min": 1},
+          {"avg": 1, "day": "2024-12-05", "max": 3, "min": 1},
+          {"avg": 1, "day": "2024-12-06", "max": 1, "min": 1},
+          {"avg": 2, "day": "2024-12-07", "max": 4, "min": 1},
+          {"avg": 3, "day": "2024-12-08", "max": 5, "min": 2},
+          {"avg": 2, "day": "2024-12-09", "max": 4, "min": 1},
+          {"avg": 2, "day": "2024-12-10", "max": 3, "min": 2}
+        ],
+        "pm10": [
+          {"avg": 47, "day": "2024-12-03", "max": 47, "min": 47},
+          {"avg": 51, "day": "2024-12-04", "max": 73, "min": 26},
+          {"avg": 75, "day": "2024-12-05", "max": 121, "min": 46},
+          {"avg": 100, "day": "2024-12-06", "max": 123, "min": 58},
+          {"avg": 59, "day": "2024-12-07", "max": 73, "min": 19},
+          {"avg": 56, "day": "2024-12-08", "max": 70, "min": 19},
+          {"avg": 56, "day": "2024-12-09", "max": 70, "min": 26},
+          {"avg": 54, "day": "2024-12-10", "max": 59, "min": 19},
+          {"avg": 54, "day": "2024-12-11", "max": 58, "min": 28}
+        ],
+        "pm25": [
+          {"avg": 141, "day": "2024-12-03", "max": 141, "min": 141},
+          {"avg": 148, "day": "2024-12-04", "max": 160, "min": 69},
+          {"avg": 178, "day": "2024-12-05", "max": 247, "min": 138},
+          {"avg": 215, "day": "2024-12-06", "max": 252, "min": 159},
+          {"avg": 155, "day": "2024-12-07", "max": 174, "min": 68},
+          {"avg": 144, "day": "2024-12-08", "max": 159, "min": 68},
+          {"avg": 153, "day": "2024-12-09", "max": 160, "min": 69},
+          {"avg": 152, "day": "2024-12-10", "max": 160, "min": 68},
+          {"avg": 147, "day": "2024-12-11", "max": 159, "min": 89}
+        ],
+        "uvi": [
+          {"avg": 1, "day": "2024-12-04", "max": 3, "min": 0},
+          {"avg": 1, "day": "2024-12-05", "max": 3, "min": 0},
+          {"avg": 1, "day": "2024-12-06", "max": 2, "min": 0},
+          {"avg": 0, "day": "2024-12-07", "max": 1, "min": 0},
+          {"avg": 1, "day": "2024-12-08", "max": 3, "min": 0},
+          {"avg": 0, "day": "2024-12-09", "max": 1, "min": 0}
+        ]
+      }
+    },
+    "debug": {
+      "sync": "2024-12-05T06:22:39+09:00"
+    }
+  }
