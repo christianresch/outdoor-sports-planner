@@ -17,7 +17,10 @@ class TestWeatherDataCollector(unittest.TestCase):
         self.air_quality_data_collector.__make_request__ = MagicMock()
 
         def mock_side_effect(*args, **kwargs):
-            city = kwargs.get('city')
+            print("Args:", args)
+            print("Kwargs:", kwargs)
+
+            city = kwargs.get('city', args[0] if len(args) > 0 else None)
             latitude = kwargs.get('latitude')
             longitude = kwargs.get('longitude')
 
@@ -34,7 +37,6 @@ class TestWeatherDataCollector(unittest.TestCase):
 
         self.air_quality_data_collector.__make_request__.side_effect = mock_side_effect
 
-    # TODO CURRENT STATUS: I need to replace the MagicMock with patching to properly test this. So I need to rewrite all of this. Run pytest and then solve the issues.
     def test_get_air_quality_data(self):
         result = self.air_quality_data_collector.get_air_quality_data('Shanghai')
 
@@ -57,7 +59,6 @@ class TestWeatherDataCollector(unittest.TestCase):
         self.assertEqual(result['aqi'], 74)
         self.assertEqual(result['pm25_forecast'][0]['avg'], 141)
 
-    # TODO Check whether all the below also need patches instead of MagicMock!
     def test_client_error(self):
         with self.assertRaises(requests.exceptions.HTTPError) as context:
             self.air_quality_data_collector.get_air_quality_data("BadRequest")
@@ -107,6 +108,8 @@ class TestWeatherDataCollector(unittest.TestCase):
     #TODO test_API_unexpected_data_format
 
     #TODO add test for over quota
+
+    #TODO add test for proper time zone handling
 
     def __load_test_data__(self, test_data: str):
         with open(test_data, 'r') as file:
