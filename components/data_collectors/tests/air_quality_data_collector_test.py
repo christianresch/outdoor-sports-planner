@@ -11,13 +11,16 @@ from dotenv import load_dotenv
 class TestWeatherDataCollector(unittest.TestCase):
 
     def setUp(self):
-        self.test_json_response: AirQualityData = self.__load_test_data__("test_aqicn_json_response.json")
+        self.test_json_response: AirQualityData = self.__load_test_data__("components/data_collectors/tests/test_aqicn_json_response.json")
 
         self.air_quality_data_collector = AirQualityDataCollector()
         self.air_quality_data_collector.__make_request__ = MagicMock()
 
-        def mock_side_effect(*args):
-            city = args[0]  # Assuming the first argument is the city
+        def mock_side_effect(*args, **kwargs):
+            city = kwargs.get('city')
+            latitude = kwargs.get('latitude')
+            longitude = kwargs.get('longitude')
+
             if city == "NonExistentCity":
                 raise ValueError(f"City {city} not found")
             elif city == "BadRequest":
@@ -27,7 +30,7 @@ class TestWeatherDataCollector(unittest.TestCase):
             elif city == "Timeout":
                 raise requests.exceptions.Timeout
             else:
-                return self.test_json_response  # Return some default data for other cities
+                return self.test_json_response
 
         self.air_quality_data_collector.__make_request__.side_effect = mock_side_effect
 
@@ -48,7 +51,7 @@ class TestWeatherDataCollector(unittest.TestCase):
     def test_get_air_quality_data_by_coords(self):
         result = self.air_quality_data_collector.get_air_quality_data_by_coords(latitude=31.2047372, longitude=121.4489017)
 
-        self.assertEqual(result['city'], 'Shanghai')
+        self.assertEqual(result['city'], self.test_json_response['city']['name'])
         self.assertEqual(result['latitude'], 31.2047372)
         self.assertEqual(result['longitude'], 121.4489017)
         self.assertEqual(result['aqi'], 74)
