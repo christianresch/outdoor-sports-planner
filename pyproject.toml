@@ -18,6 +18,7 @@ requests-cache = "^1.2.1"
 pandas = "^2.2.3"
 retry-requests = "^2.0.0"
 sqlalchemy = "^2.0.36"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
