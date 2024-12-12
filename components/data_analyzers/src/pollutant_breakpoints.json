@@ -1,0 +1,76 @@
+{
+  "pm25_breakpoints": {
+    "1 very bad":
+    {
+      "lower_bound": 51,
+      "higher_bound": ""
+    },
+    "2 bad": {
+      "lower_bound": 26,
+      "higher_bound": 51
+    },
+    "3 fair": {
+      "lower_bound": 21,
+      "higher_bound": 51
+    },
+    "4 good": {
+      "lower_bound": 11,
+      "higher_bound": 20
+    },
+    "5 very good": {
+      "lower_bound": 0,
+      "higher_bound": 10
+    }
+  },
+  "pm10_breakpoints": {
+    "1 very bad":
+    {
+      "lower_bound": 101,
+      "higher_bound": ""
+    },
+    "2 bad": {
+      "lower_bound": 51,
+      "higher_bound": 100
+    },
+    "3 fair": {
+      "lower_bound": 36,
+      "higher_bound": 50
+    },
+    "4 good": {
+      "lower_bound": 21,
+      "higher_bound": 35
+    },
+    "5 very good": {
+      "lower_bound": 0,
+      "higher_bound": 20
+    }
+  },
+  "o3_breakpoints": {
+    "1 very bad":
+    {
+      "lower_bound": 241,
+      "higher_bound": ""
+    },
+    "2 bad": {
+      "lower_bound": 181,
+      "higher_bound": 240
+    },
+    "3 fair": {
+      "lower_bound": 121,
+      "higher_bound": 180
+    },
+    "4 good": {
+      "lower_bound": 61,
+      "higher_bound": 120
+    },
+    "5 very good": {
+      "lower_bound": 0,
+      "higher_bound": 60
+    },
+    "units": {
+      "pm25": "24-hour moving average",
+      "pm10": "24-hour moving average",
+      "o3": "hourly average"
+    }
+  }
+}
