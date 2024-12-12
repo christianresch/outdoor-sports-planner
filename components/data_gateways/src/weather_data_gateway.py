@@ -5,6 +5,7 @@ from components.database_support.weather_record import WeatherRecord
 from typing import Optional, List
 from datetime import datetime
 
+#TODO Add the option to store additional weather information
 class WeatherDataGateway():
 
     def __init__(self, db_path: str = "sqlite:///weather.db"):
