@@ -1,76 +1,188 @@
 {
-  "pm25_breakpoints": {
-    "1 very bad":
-    {
-      "lower_bound": 51,
-      "higher_bound": ""
+    "o3_breakpoints": {
+        "Good": {
+            "Range": [
+                0.0,
+                0.054
+            ],
+            "AQI": [
+                0,
+                50
+            ]
+        },
+        "Moderate": {
+            "Range": [
+                0.055,
+                0.07
+            ],
+            "AQI": [
+                51,
+                100
+            ]
+        },
+        "Unhealthy for Sensitive Groups": {
+            "Range": [
+                0.071,
+                0.085
+            ],
+            "AQI": [
+                101,
+                150
+            ]
+        },
+        "Unhealthy": {
+            "Range": [
+                0.086,
+                0.105
+            ],
+            "AQI": [
+                151,
+                200
+            ]
+        },
+        "Very Unhealthy": {
+            "Range": [
+                0.106,
+                0.2
+            ],
+            "AQI": [
+                201,
+                300
+            ]
+        },
+        "Hazardous": {
+            "Range": [
+                0.201,
+                0.405
+            ],
+            "AQI": [
+                301,
+                null
+            ]
+        }
     },
-    "2 bad": {
-      "lower_bound": 26,
-      "higher_bound": 51
+    "pm25_breakpoints": {
+        "Good": {
+            "Range": [
+                0.0,
+                9.0
+            ],
+            "AQI": [
+                0,
+                50
+            ]
+        },
+        "Moderate": {
+            "Range": [
+                9.1,
+                35.4
+            ],
+            "AQI": [
+                51,
+                100
+            ]
+        },
+        "Unhealthy for Sensitive Groups": {
+            "Range": [
+                35.5,
+                55.4
+            ],
+            "AQI": [
+                101,
+                150
+            ]
+        },
+        "Unhealthy": {
+            "Range": [
+                55.5,
+                125.4
+            ],
+            "AQI": [
+                151,
+                200
+            ]
+        },
+        "Very Unhealthy": {
+            "Range": [
+                125.5,
+                225.4
+            ],
+            "AQI": [
+                201,
+                300
+            ]
+        },
+        "Hazardous": {
+            "Range": [
+                225.5,
+                null
+            ],
+            "AQI": [
+                301,
+                null
+            ]
+        }
     },
-    "3 fair": {
-      "lower_bound": 21,
-      "higher_bound": 51
-    },
-    "4 good": {
-      "lower_bound": 11,
-      "higher_bound": 20
-    },
-    "5 very good": {
-      "lower_bound": 0,
-      "higher_bound": 10
+    "pm10_breakpoints": {
+        "Good": {
+            "Range": [
+                0.0,
+                54.0
+            ],
+            "AQI": [
+                0,
+                50
+            ]
+        },
+        "Moderate": {
+            "Range": [
+                55.0,
+                154.0
+            ],
+            "AQI": [
+                51,
+                100
+            ]
+        },
+        "Unhealthy for Sensitive Groups": {
+            "Range": [
+                155.0,
+                254.0
+            ],
+            "AQI": [
+                101,
+                150
+            ]
+        },
+        "Unhealthy": {
+            "Range": [
+                255.0,
+                354.0
+            ],
+            "AQI": [
+                151,
+                200
+            ]
+        },
+        "Very Unhealthy": {
+            "Range": [
+                355.0,
+                424.0
+            ],
+            "AQI": [
+                201,
+                300
+            ]
+        },
+        "Hazardous": {
+            "Range": [
+                425.0,
+                null
+            ],
+            "AQI": [
+                301,
+                null
+            ]
+        }
     }
-  },
-  "pm10_breakpoints": {
-    "1 very bad":
-    {
-      "lower_bound": 101,
-      "higher_bound": ""
-    },
-    "2 bad": {
-      "lower_bound": 51,
-      "higher_bound": 100
-    },
-    "3 fair": {
-      "lower_bound": 36,
-      "higher_bound": 50
-    },
-    "4 good": {
-      "lower_bound": 21,
-      "higher_bound": 35
-    },
-    "5 very good": {
-      "lower_bound": 0,
-      "higher_bound": 20
-    }
-  },
-  "o3_breakpoints": {
-    "1 very bad":
-    {
-      "lower_bound": 241,
-      "higher_bound": ""
-    },
-    "2 bad": {
-      "lower_bound": 181,
-      "higher_bound": 240
-    },
-    "3 fair": {
-      "lower_bound": 121,
-      "higher_bound": 180
-    },
-    "4 good": {
-      "lower_bound": 61,
-      "higher_bound": 120
-    },
-    "5 very good": {
-      "lower_bound": 0,
-      "higher_bound": 60
-    },
-    "units": {
-      "pm25": "24-hour moving average",
-      "pm10": "24-hour moving average",
-      "o3": "hourly average"
-    }
-  }
 }
