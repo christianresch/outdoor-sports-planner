@@ -26,8 +26,8 @@ class WeatherDataCollector:
         self.openmeteo = openmeteo_requests.Client(session=retry_session)
 
     def get_weather_data(self,
-                         latitude: int,
-                         longitude: int,
+                         latitude: float,
+                         longitude: float,
                          #TODO Add more current weather data
                          current: str="temperature_2m",
                          daily: [str]=["weather_code",
@@ -37,6 +37,13 @@ class WeatherDataCollector:
                          only_current: bool = False) -> Union[float, List[WeatherForecast]]:
         # Make sure all required weather variables are listed here
         # The order of variables in hourly or daily is important to assign them correctly below
+
+        if not isinstance(latitude, float) or not isinstance(longitude, float):
+            raise TypeError("Latitude and longitude must be a float.")
+        elif latitude > 90 or latitude < -90:
+            raise ValueError("Latitude must be a float between -90 and 90.")
+        elif longitude > 180 or longitude < -180:
+            raise ValueError("Latitude must be a float between -180 and 180.")
 
         params = {
             "latitude": latitude,
