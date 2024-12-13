@@ -68,7 +68,7 @@ class AirQualityDataCollector:
         if latitude > 90 or latitude < -90:
             raise ValueError("Latitude must be a float between -90 and 90.")
         elif longitude > 180 or longitude < -180:
-            raise ValueError("Latitude must be a float between -90 and 90.")
+            raise ValueError("Latitude must be a float between -180 and 180.")
         elif not isinstance(latitude, float) or not isinstance(longitude, float):
             raise TypeError("Latitude and longitude must be a float.")
 
