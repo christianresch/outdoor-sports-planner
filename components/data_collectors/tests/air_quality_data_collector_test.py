@@ -94,16 +94,16 @@ class TestWeatherDataCollector(unittest.TestCase):
     def test_get_air_quality_data_by_coords_latitude_out_of_range(self):
         # Latitude can be max 90 degrees
         with self.assertRaises(ValueError):
-            self.air_quality_data_collector.get_air_quality_data_by_coords(91, 121.4489017)  # Invalid latitude > 90
+            self.air_quality_data_collector.get_air_quality_data_by_coords(91.0, 121.4489017)  # Invalid latitude > 90
 
     def test_get_air_quality_data_by_coords_longitude_out_of_range(self):
         # Longitude can be max 180 degrees
         with self.assertRaises(ValueError):
-            self.air_quality_data_collector.get_air_quality_data_by_coords(31.2047372, 181)  # Invalid longitude > 180
+            self.air_quality_data_collector.get_air_quality_data_by_coords(31.2047372, 181.0)  # Invalid longitude > 180
 
     def test_get_air_quality_data_by_coords_both_out_of_range(self):
         with self.assertRaises(ValueError):
-            self.air_quality_data_collector.get_air_quality_data_by_coords(91, 181)  # Invalid latitude and longitude
+            self.air_quality_data_collector.get_air_quality_data_by_coords(91.0, 181.0)  # Invalid latitude and longitude
 
     #TODO test_API_unexpected_data_format
 
