@@ -28,7 +28,12 @@ class AirQualityData(TypedDict):
 class AirQualityDataCollector:
 
     def __init__(self):
-        load_dotenv("../../../.env")
+        # Dynamically determine the absolute path to the .env file
+        base_dir = os.path.dirname(os.path.abspath(__file__))  # Directory of air_quality_data_collector.py
+        env_path = os.path.join(base_dir, '../../../.env')  # Adjust relative path
+
+        # Load the .env file
+        load_dotenv(env_path)
 
         self.AQICN_TOKEN = os.getenv("AQICN_TOKEN")
 
@@ -122,6 +127,9 @@ class AirQualityDataCollector:
             raise KeyError("The expected 'data' field is missing in the response") from e
 
     def __validate_air_quality_data__(self, data: dict) -> bool:
+        if not isinstance(data, dict):
+            raise TypeError(f"Expected 'data' to be a dictionary, got {type(data).__name__}")
+
         keys = ['aqi', 'city', 'dominentpol', 'time', 'forecast']
 
         for key in keys:
