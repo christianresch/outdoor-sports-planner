@@ -21,6 +21,7 @@ class AQICalculator():
                  pm25: Optional[float] = None,
                  pm10: Optional[float] = None,
                  pollutant_breakpoints_path: Optional[str] = None):
+        #TODO Turn these into private attributes and add getter and setter methods
         if dominantpol:
             self.dominantpol = dominantpol
         if pm25:
@@ -41,6 +42,8 @@ class AQICalculator():
             self.pm25_breakpoints = pollutant_breakpoints['pm25_breakpoints']
             self.pm10_breakpoints = pollutant_breakpoints['pm10_breakpoints']
             #self.o3_breakpoints = pollutant_breakpoints['o3_breakpoints']
+
+    #TODO Add getter and setter methods!
 
     def calculate_aqi(self) -> float:
         if all(v not in self.__dict__.keys() for v in self.pollutants_list):
