@@ -30,7 +30,7 @@ class TestWeatherAQIAnalyzer(unittest.TestCase):
         self.weather_aqi_analyzer.__get_today__ = MagicMock(return_value=mock_today)
 
     def test_predict_outdoor_sports_day(self):
-        prediction = self.weather_aqi_analyzer.predict_best_outdoor_sports_day
+        prediction = self.weather_aqi_analyzer.predict_best_outdoor_sports_day()
 
         assert prediction[0]['date'] == self.mock_results[0]['date']
         assert prediction[1]['date'] == self.mock_results[1]['date']

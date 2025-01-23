@@ -56,7 +56,6 @@ class WeatherAQIAnalyzer:
         if air_quality_forecast:
             self._air_quality_forecast = air_quality_forecast
 
-    @property
     def predict_best_outdoor_sports_day(self) -> List[datetime]:
         """
         :return: List[dict] with Dict.keys = [date: datetime.date, aqi: float, aqi_category: str, temperature_2m_max: float, sunshine_duration: float, precipitation_hours: float]
