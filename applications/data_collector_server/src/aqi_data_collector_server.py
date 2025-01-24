@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
+from loguru import logger
 from components.data_collectors.src.air_quality_data_collector import AirQualityDataCollector
 from components.data_collectors.src.coordinates_collector import CoordinatesCollector
 
@@ -28,6 +29,7 @@ async def collect(
         collector: AirQualityDataCollector = Depends(get_collector),
         coordinates_collector: CoordinatesCollector = Depends(get_coordinates_collector)
 ):
+    logger.info(f"Request received with city: {data.city}, latitude: {str(data.latitude)} and longitude: {str(data.longitude)}")
     try:
         # Validate input (custom validation logic)
         data.validate()
@@ -41,11 +43,11 @@ async def collect(
             latitude, longitude = coordinates_collector.get_coordinates(data.city)
 
             result = collector.get_air_quality_data_by_coords(latitude, longitude)
-
-        return result
     else:
         result = collector.get_air_quality_data_by_coords(data.latitude, data.longitude)
-        return result
+
+    logger.info("Returning data...")
+    return result
 
 
 

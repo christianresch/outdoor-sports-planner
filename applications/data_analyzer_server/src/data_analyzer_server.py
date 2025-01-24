@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
+from loguru import logger
 import httpx
 from components.data_analyzers.src.weather_aqi_analyzer import WeatherAQIAnalyzer
 
@@ -9,9 +10,8 @@ def get_analyzer():
 app = FastAPI()
 
 # API URLs for the data collector servers
-# TODO To be changed
-WEATHER_API_URL = "http://localhost:8001/collect_weather_data"
-AIR_QUALITY_API_URL = "http://localhost:8002/collect_air_quality_data"
+WEATHER_API_URL = "http://localhost:8001/collect"
+AIR_QUALITY_API_URL = "http://localhost:8002/collect"
 
 # Input schema
 class RequestData(BaseModel):
@@ -29,36 +29,47 @@ async def analyze(
         data: RequestData,
         analyzer: WeatherAQIAnalyzer = Depends(get_analyzer)
 ):
+    logger.info(f"Request received with city: {data.city}, latitude: {str(data.latitude)} and longitude: {str(data.longitude)}")
     try:
         # Validate input (custom validation logic)
         data.validate()
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-    # Prepare request parameters for data collectors
-    params = {
-        "latitude": data.latitude,
-        "longitude": data.longitude,
-        "city": data.city,
-    }
+    if data.city == "":
+        data.city = None
 
-    #TODO Adapt this!
+    # Prepare request parameters for data collectors
+    params = {}
+
+    if data.city:
+        params["city"] = data.city
+
+    if data.latitude and data.longitude:
+        params["latitude"] = data.latitude
+        params["longitude"] = data.longitude
+
     async with httpx.AsyncClient() as client:
         # Fetch weather data
-        weather_response = await client.get(WEATHER_API_URL, params=params)
+        logger.info(f"Fetching weather data with params: {params}")
+        weather_response = await client.post(WEATHER_API_URL, json=params)
         if weather_response.status_code != 200:
             raise HTTPException(status_code=weather_response.status_code, detail="Error fetching weather data.")
+        logger.info(f"Weather data received with {weather_response.status_code} status code")
         weather_data = weather_response.json()
 
         # Fetch air quality data
-        air_quality_response = await client.get(AIR_QUALITY_API_URL, params=params)
+        logger.info(f"Fetching AQI data with params: {params}")
+        air_quality_response = await client.post(AIR_QUALITY_API_URL, json=params)
         if air_quality_response.status_code != 200:
             raise HTTPException(status_code=air_quality_response.status_code, detail="Error fetching air quality data.")
+        logger.info(f"AQI data received with {air_quality_response.status_code} status code")
         air_quality_data = air_quality_response.json()
 
     analyzer.set_weather_forecast(weather_data)
     analyzer.set_air_quality_forecast(air_quality_data)
 
+    logger.info("Analyzing results...")
     result = analyzer.predict_best_outdoor_sports_day()
 
     return result
