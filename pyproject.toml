@@ -19,6 +19,7 @@ pandas = "^2.2.3"
 retry-requests = "^2.0.0"
 sqlalchemy = "^2.0.36"
 python-dotenv = "^1.0.1"
+loguru = "^0.7.3"
 
 
 [build-system]
