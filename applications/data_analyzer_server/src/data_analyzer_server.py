@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, Query
 from pydantic import BaseModel
-from datetime import datetime, date
 import httpx
 from components.data_analyzers.src.weather_aqi_analyzer import WeatherAQIAnalyzer
 
@@ -28,7 +27,7 @@ class RequestData(BaseModel):
 @app.post("/analyze")
 async def analyze(
         data: RequestData,
-        analyzer: WeatherAQIAnalyzer = Depends(get_analyzer())
+        analyzer: WeatherAQIAnalyzer = Depends(get_analyzer)
 ):
     try:
         # Validate input (custom validation logic)
