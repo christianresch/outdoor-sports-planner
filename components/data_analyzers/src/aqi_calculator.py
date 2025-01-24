@@ -87,8 +87,8 @@ class AQICalculator():
                     aqi_high = breakpoints[aqi_level]['AQI'][1]
                     break
 
-        #if breakpoint_high is None:
-        #    return 301
+        if breakpoint_high is None:
+            return 301
 
         pollutant_aqi=((aqi_high - aqi_low) / (breakpoint_high - breakpoint_low)) * (pollutant_concentration - breakpoint_low) + aqi_low
 
