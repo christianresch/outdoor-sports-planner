@@ -69,7 +69,12 @@ async def analyze(
     analyzer.set_weather_forecast(weather_data)
     analyzer.set_air_quality_forecast(air_quality_data)
 
-    logger.info("Analyzing results...")
+    logger.info("Starting analysis...")
+    #TODO Change to logger.debug
+    logger.debug(f"Weather data: {analyzer.get_weather_forecast()}")
+    logger.debug(f"AQI data: {analyzer.get_air_quality_forecast()}")
     result = analyzer.predict_best_outdoor_sports_day()
+
+    logger.debug(f"Returning results: {result}")
 
     return result
