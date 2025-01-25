@@ -4,6 +4,7 @@ from components.data_analyzers.src.aqi_calculator import AQICalculator
 from typing import List, Dict, Optional
 from datetime import datetime
 import pandas as pd
+from loguru import logger
 
 class WeatherAQIAnalyzer:
 
@@ -95,6 +96,9 @@ class WeatherAQIAnalyzer:
                     category = self.aqi_categories[key]['level']
                     break
 
+            if (isinstance(date, str)):
+                date = datetime.fromisoformat(date)
+
             aqi_categorized.append({
                 'date': date.date(),
                 'aqi': aqi,
@@ -107,6 +111,8 @@ class WeatherAQIAnalyzer:
         weather_df = pd.DataFrame(self._weather_forecast)
         weather_df['date'] = pd.to_datetime((weather_df['date']))
         weather_df['date'] = weather_df['date'].dt.tz_convert(None)
+        weather_df['date'] = weather_df['date'].dt.date
+        weather_df['date'] = pd.to_datetime(weather_df['date'])
 
         data = pd.merge(aqi_df, weather_df, on='date', how='left')
 
@@ -119,9 +125,12 @@ class WeatherAQIAnalyzer:
 
         #data = data[data['category'] < 4]
 
-        data.sort_values(by=['category', 'precipitation_hours', 'temperature_2m_max', 'sunshine_duration'], ascending=[True, False, True, True], inplace=True)
+        data.sort_values(by=['category', 'precipitation_hours', 'temperature_2m_max', 'sunshine_duration'], ascending=[True, True, False, False], inplace=True)
 
         data['date'] = data['date'].dt.date
+
+        #TODO Add test that ensures JSON serialization, i.e. no nan in the output
+        data = data.replace({float('nan'): None})
 
         result = data.to_dict(orient='records')
 
