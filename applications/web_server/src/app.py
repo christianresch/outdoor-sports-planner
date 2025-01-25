@@ -23,7 +23,6 @@ async def main():
          <input name="user_input">
          <input type="submit" value="Submit!">
      </form>
-    (Note: This is just a dummy website so far and won't actually give you real information)<br>
     
      '''
 @app.post("/best_outdoor_sports_day")
@@ -50,7 +49,10 @@ async def best_outdoor_sports_day(user_input: str = Form(...)):
     </head>
     <body>
         <h1> Your outdoor sports prediction for {user_input}</h1>
-        You are in <b>{user_input}</b>. Your best sports day is {str(data_analyzer_response[0]['date'])}</h1>
+        You are in <b>{user_input}</b>. Your best outdoor sports day in the coming days is {str(data_analyzer_response[0]['date'])}.
+        The Air Quality Index on  {str(data_analyzer_response[0]['date'])} will be {str(data_analyzer_response[0]['aqi'])} 
+        and the temperature will be  {str(round(data_analyzer_response[0]['temperature_2m_max'],2))} degrees celsius. 
+        There are {str(round(data_analyzer_response[0]['precipitation_hours'],0))} hours of rain forecasted.
     """
     return Response(content=html_content, media_type='text/html')
 
