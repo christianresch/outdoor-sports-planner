@@ -12,6 +12,7 @@ DATA_ANALYZER_API_URL = "http://localhost:8003/analyze"
 
 @app.get("/", response_class=HTMLResponse)
 async def main():
+    #TODO Move the html somewhere else
     return '''
     
     <h1> Outdoor sports planner</h1>
@@ -40,7 +41,21 @@ async def best_outdoor_sports_day(user_input: str = Form(...)):
         if data_analyzer_response.status_code != 200:
             raise HTTPException(status_code=data_analyzer_response.status_code, detail="Error fetching best sports day.")
         logger.info(f"Best sports day received with {data_analyzer_response.status_code} status code")
-        data_analyzer_response = data_analyzer_response.json()
+
+    logger.debug(f"Best sports day received with {data_analyzer_response}")
+    data_analyzer_response = data_analyzer_response.json()
+
+    if len(data_analyzer_response) == 0: #The analyzer gives an empty result in the absence of forecasts or if the location cannot be found.
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        </head>
+        <body>
+            Please apologise. We cannot provide you with a forecast as we either cannot locate the city provided or no data is currently available for your city.
+        """
+        return Response(content=html_content, media_type='text/html')
+
 
     html_content = f"""
     <!DOCTYPE html>
