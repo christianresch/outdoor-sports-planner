@@ -20,6 +20,8 @@ retry-requests = "^2.0.0"
 sqlalchemy = "^2.0.36"
 python-dotenv = "^1.0.1"
 loguru = "^0.7.3"
+pytest-httpx = "^0.35.0"
+pytest-asyncio = "^0.25.3"
 
 
 [build-system]
