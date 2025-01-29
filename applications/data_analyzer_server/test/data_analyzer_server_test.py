@@ -1,17 +1,10 @@
 from datetime import date
 from unittest.mock import MagicMock
-
 import pytest
 import os
 import pickle
-import json
 from applications.data_analyzer_server.src.data_analyzer_server import get_analyzer, analyze, RequestData
-from components.data_collectors.src.weather_data_collector import WeatherDataCollector
-from components.data_collectors.src.air_quality_data_collector import AirQualityDataCollector
-
 from loguru import logger
-import pandas as pd
-from fastapi import Depends
 
 #Integration tests
 
@@ -21,42 +14,6 @@ AIR_QUALITY_API_URL = "http://localhost:8002/collect"
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 root_dir = os.path.abspath(os.path.join(current_dir, os.pardir, os.pardir, os.pardir))
-
-'''
-data_collectors_dir = os.path.join(root_dir, 'components', 'data_collectors', 'tests')
-
-mock_weather_data_path = os.path.join(data_collectors_dir, 'weather_api_mock_daily.pkl')
-with open(mock_weather_data_path, "rb") as file:
-    mock_weather_api_response = pickle.load(file)
-
-weather_data_collector = WeatherDataCollector()
-mock_weather_data = weather_data_collector.process_external_data(mock_weather_api_response)
-
-mock_weather_data = [
-    {**item, 'date': item['date'].isoformat()}  # Convert 'date' to ISO 8601 string
-    for item in mock_weather_data
-]
-
-mock_aqi_data_path = os.path.join(data_collectors_dir, 'test_aqicn_json_response.json')
-with open(mock_aqi_data_path, "rb") as file:
-    mock_aqi_api_response = json.load(file)
-
-aqi_data_collector = AirQualityDataCollector()
-mock_aqi_data = aqi_data_collector.process_external_data(mock_aqi_api_response)
-
-logger.debug(f"Mock AQI Data: {mock_aqi_data}")
-
-mock_aqi_data['datetime'] = mock_aqi_data['datetime'].isoformat()
-
-pollutant_forecasts = ['pm25_forecast', 'pm10_forecast', 'o3_forecast', 'uvi_forecast']
-
-for pollutant in pollutant_forecasts:
-    if pollutant in mock_aqi_data and isinstance(mock_aqi_data[pollutant], list):
-        mock_aqi_data[pollutant] = [
-            {**item, 'date': item['date'].isoformat()}
-            for item in mock_aqi_data[pollutant] if isinstance(item, dict) and 'date' in item
-        ]
-'''
 
 data_analyzers_dir = os.path.join(root_dir, 'components', 'data_analyzers', 'test')
 
