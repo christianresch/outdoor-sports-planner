@@ -2,7 +2,6 @@ import pytest
 from fastapi.testclient import TestClient
 import os
 import pickle
-from unittest.mock import AsyncMock, patch
 from applications.web_server.src.app import app, best_outdoor_sports_day
 from loguru import logger
 
