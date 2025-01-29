@@ -1,6 +1,7 @@
 import openmeteo_requests
 from openmeteo_requests.Client import OpenMeteoRequestsError
 import requests_cache
+from openmeteo_sdk.WeatherApiResponse import WeatherApiResponse
 from retry_requests import retry
 from typing import Union, TypedDict, List
 from datetime import datetime
@@ -55,7 +56,7 @@ class WeatherDataCollector:
         # TODO Figure out how OpenMeteo API communicate HTTP Error codes
 
         if only_current:
-            responses = self.__make_request__(params)
+            responses = self._make_request(params)
 
             # Process first location. Add a for-loop for multiple locations or weather models
             response = responses[0]
@@ -68,10 +69,23 @@ class WeatherDataCollector:
 
         params['daily'] = daily
 
-        responses = self.__make_request__(params)
+        responses = self._make_request(params)
 
+        daily_dict = self._process_data(responses)
+
+        return daily_dict
+
+    def _make_request(self, params: dict) -> List:
+        try:
+            responses = self.openmeteo.weather_api(self.url, params=params)
+            return responses
+        except OpenMeteoRequestsError as e:
+            raise ValueError("Bad request: Check your parameters.") from e
+
+    @staticmethod
+    def _process_data(data: WeatherApiResponse) -> list[dict]:
         # Process first location. Add a for-loop for multiple locations or weather models
-        response = responses[0]
+        response = data[0]
 
         daily = response.Daily()
         daily_weather_code = daily.Variables(0).ValuesAsNumpy()
@@ -96,12 +110,9 @@ class WeatherDataCollector:
 
         return daily_dict
 
-    def __make_request__(self, params: dict) -> List:
-        try:
-            responses = self.openmeteo.weather_api(self.url, params=params)
-            return responses
-        except OpenMeteoRequestsError as e:
-            raise ValueError("Bad request: Check your parameters.") from e
+    def process_external_data(self, data: WeatherApiResponse) -> list[dict]:
+        return self._process_data(data)
+
 
 
 

@@ -41,31 +41,12 @@ class AirQualityDataCollector:
         if not isinstance(city, str):
             raise TypeError("City must be a string.")
 
-        data = self.__make_request__(city)
+        data = self._make_request(city)
 
-        if not self.__validate_air_quality_data__(data):
+        if not self._validate_air_quality_data(data):
             raise ValueError("Data from AQICN does not align with excpeted data format.")
 
-        result: AirQualityData = {'city': city, # To keep this internally consistent (AQICN for example also returns city names in local script)
-                                           'latitude': data['city']['geo'][0],
-                                           'longitude': data['city']['geo'][1],
-                                           'datetime': datetime.now(), #TODO Add here the time returned by the API
-                                           'aqi': data['aqi'],
-                                           'dominentpol': data['dominentpol']
-                                           }
-
-        pollutants = ['pm25', 'pm10', 'o3', 'uvi']
-
-        for pollutant in pollutants:
-            forecasts = []
-
-            for element in data['forecast']['daily'][pollutant]:
-                forecast: AirQualityForecast = {'avg': element['avg'],
-                                                'date': datetime.strptime(element['day'], "%Y-%m-%d")}
-
-                forecasts.append(forecast)
-
-            result[f"{pollutant}_forecast"] = forecasts
+        result = self._process_data(data, city=city)
 
         return result
 
@@ -77,35 +58,16 @@ class AirQualityDataCollector:
         elif longitude > 180 or longitude < -180:
             raise ValueError("Latitude must be a float between -180 and 180.")
 
-        data = self.__make_request__(latitude=latitude, longitude=longitude)
+        data = self._make_request(latitude=latitude, longitude=longitude)
 
-        if not self.__validate_air_quality_data__(data):
+        if not self._validate_air_quality_data(data):
             raise ValueError("Data from AQICN does not align with excpeted data format.")
 
-        result: AirQualityData = {'city': data['city']['name'], #If nothing else is available, use AQICN city name
-                                  'latitude': data['city']['geo'][0],
-                                  'longitude': data['city']['geo'][1],
-                                  'datetime': datetime.now(),  # TODO Add here the time returned by the API
-                                  'aqi': data['aqi'],
-                                  'dominentpol': data['dominentpol']
-                                  }
-
-        pollutants = ['pm25', 'pm10', 'o3', 'uvi']
-
-        for pollutant in pollutants:
-            forecasts = []
-
-            for element in data['forecast']['daily'][pollutant]:
-                forecast: AirQualityForecast = {'avg': element['avg'],
-                                                'date': datetime.strptime(element['day'], "%Y-%m-%d")}
-
-                forecasts.append(forecast)
-
-            result[f"{pollutant}_forecast"] = forecasts
+        result = self._process_data(data)
 
         return result
 
-    def __make_request__(self, city: str = None, latitude: float = None, longitude: float = None) -> dict:
+    def _make_request(self, city: str = None, latitude: float = None, longitude: float = None) -> dict:
         if city:
             url = f"http://api.waqi.info/feed/{city}/?token={self.AQICN_TOKEN}"
         elif latitude is not None and longitude is not None:
@@ -126,7 +88,7 @@ class AirQualityDataCollector:
         except KeyError as e:
             raise KeyError("The expected 'data' field is missing in the response") from e
 
-    def __validate_air_quality_data__(self, data: dict) -> bool:
+    def _validate_air_quality_data(self, data: dict) -> bool:
         if not isinstance(data, dict):
             raise TypeError(f"Expected 'data' to be a dictionary, got {type(data).__name__}")
 
@@ -155,3 +117,38 @@ class AirQualityDataCollector:
                 return False
 
         return True
+
+    @staticmethod
+    def _process_data(data, city: str = None) -> AirQualityData:
+        if city is None:
+            city = data['city']['name']
+
+        result: AirQualityData = {'city': city,
+                                  # To keep this internally consistent (AQICN for example also returns city names in local script)
+                                  'latitude': data['city']['geo'][0],
+                                  'longitude': data['city']['geo'][1],
+                                  'datetime': datetime.now(),  # TODO Add here the time returned by the API
+                                  'aqi': data['aqi'],
+                                  'dominentpol': data['dominentpol']
+                                  }
+
+        pollutants = ['pm25', 'pm10', 'o3', 'uvi']
+
+        for pollutant in pollutants:
+            forecasts = []
+
+            for element in data['forecast']['daily'][pollutant]:
+                forecast: AirQualityForecast = {'avg': element['avg'],
+                                                'date': datetime.strptime(element['day'], "%Y-%m-%d")}
+
+                forecasts.append(forecast)
+
+            result[f"{pollutant}_forecast"] = forecasts
+
+        return result
+
+    def process_external_data(self, data, city: str = None):
+        if city is None:
+            return self._process_data(data)
+        else:
+            return self._process_data(data, city)

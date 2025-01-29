@@ -8,7 +8,7 @@ class TestWeatherDataCollector(unittest.TestCase):
 
     def setUp(self):
         self.weather_data_collector = WeatherDataCollector()
-        self.weather_data_collector.__make_request__ = MagicMock()
+        self.weather_data_collector._make_request = MagicMock()
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         weather_api_mock_current_path = os.path.join(current_dir, 'weather_api_mock_current.pkl')
@@ -27,7 +27,7 @@ class TestWeatherDataCollector(unittest.TestCase):
             else:
                 return mock_weather_api_daily_object
 
-        self.weather_data_collector.__make_request__.side_effect = mock_side_effect
+        self.weather_data_collector._make_request.side_effect = mock_side_effect
 
     def test_real_api_call(self):
         real_weather_data_collector = WeatherDataCollector()

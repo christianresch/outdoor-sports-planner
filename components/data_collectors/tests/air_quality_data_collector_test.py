@@ -14,7 +14,7 @@ class TestWeatherDataCollector(unittest.TestCase):
         self.test_json_response: AirQualityData = self.__load_test_data__("components/data_collectors/tests/test_aqicn_json_response.json")
 
         self.air_quality_data_collector = AirQualityDataCollector()
-        self.air_quality_data_collector.__make_request__ = MagicMock()
+        self.air_quality_data_collector._make_request = MagicMock()
 
         def mock_side_effect(*args, **kwargs):
             print("Args:", args)
@@ -35,7 +35,7 @@ class TestWeatherDataCollector(unittest.TestCase):
             else:
                 return self.test_json_response
 
-        self.air_quality_data_collector.__make_request__.side_effect = mock_side_effect
+        self.air_quality_data_collector._make_request.side_effect = mock_side_effect
 
     def test_get_air_quality_data(self):
         result = self.air_quality_data_collector.get_air_quality_data('Shanghai')
