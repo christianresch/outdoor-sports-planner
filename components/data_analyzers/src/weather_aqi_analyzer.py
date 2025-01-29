@@ -77,7 +77,7 @@ class WeatherAQIAnalyzer:
 
         """
 
-        daily_aqi = self.__calculate_daily_aqi__(self._air_quality_forecast)
+        daily_aqi = self._calculate_daily_aqi(self._air_quality_forecast)
 
         aqi_ordered = sorted(daily_aqi.items(), key=lambda item: item[1])
 
@@ -116,7 +116,7 @@ class WeatherAQIAnalyzer:
 
         data = pd.merge(aqi_df, weather_df, on='date', how='left')
 
-        today = self.__get_today__()
+        today = self._get_today()
 
         data = data[data['date'] >= pd.to_datetime(today)]
 
@@ -136,7 +136,7 @@ class WeatherAQIAnalyzer:
 
         return result
 
-    def __calculate_daily_aqi__(self, air_quality_forecast: AirQualityData) -> Dict:
+    def _calculate_daily_aqi(self, air_quality_forecast: AirQualityData) -> Dict:
         daily_aqi = {}
 
         pm25_forecast = air_quality_forecast['pm25_forecast']
@@ -168,7 +168,7 @@ class WeatherAQIAnalyzer:
 
         return daily_aqi
 
-    def __get_today__(self) -> datetime.date:
+    def _get_today(self) -> datetime.date:
         return datetime.today().date()
 
     def set_air_quality_forecast(self, air_quality_forecast: AirQualityData):
