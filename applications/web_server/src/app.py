@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Form, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from starlette.responses import Response
 from loguru import logger
 import httpx
-import os
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
+
+Instrumentator().instrument(app).expose(app)
 
 # TODO Adapt this!
 DATA_ANALYZER_API_URL = "http://localhost:8003/analyze"
@@ -71,4 +73,17 @@ async def best_outdoor_sports_day(user_input: str = Form(...)):
     """
     return Response(content=html_content, media_type='text/html')
 
-#TODO Add /health-check endpoint, see Production Monitoring Video and a metrics endpoint (Prometheus in the example)
+@app.get("/health-check")
+def health_check():
+    return {"status": "ok"}
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    response = await call_next(request)
+    logger.info(f"Request: {request.method} {request.url} - Response: {response.status_code}")
+    return response
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    logger.error(f"Error: {str(exc)}")
+    return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
