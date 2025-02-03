@@ -1,6 +1,7 @@
 from components.data_analyzers.src.aqi_calculator import AQICalculator
 import unittest
 
+
 class TestAQICalculator(unittest.TestCase):
 
     def setUp(self):
@@ -12,10 +13,10 @@ class TestAQICalculator(unittest.TestCase):
 
         aqi = self.aqi_calculator.calculate_aqi()
 
-        assert aqi==78.76
+        assert aqi == 78.76
 
     def test_no_pollutants_provided(self):
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(ValueError):
             self.aqi_calculator.calculate_aqi()
 
-    #TODO Add edge cases: All pollutants 0 or all pollutants incredibly high
+    # TODO Add edge cases: All pollutants 0 or all pollutants incredibly high

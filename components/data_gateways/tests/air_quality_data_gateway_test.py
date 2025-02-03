@@ -6,15 +6,18 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import inspect
 from datetime import datetime
 
+
 @pytest.fixture
 def gateway():
     gateway = AirQualityDataGateway(db_path="sqlite:///:memory:")
     gateway.create()
     return gateway
 
+
 def test_database_connection(gateway):
     assert gateway.engine is not None
     assert str(gateway.engine.url) == "sqlite:///:memory:"
+
 
 def test_create_weather_database(gateway):
 
@@ -37,21 +40,29 @@ def test_create_weather_database(gateway):
     assert "uvi" in column_names
     assert "recorded_at" in column_names
 
+
 def test_insert_air_quality_data(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
-    gateway.insert_air_quality_data(city="Berlin",
-                                    latitude=52.52,
-                                    longitude=13.405,
-                                    aqi=74,
-                                    dominantpol="pm25",
-                                    pm25=25,
-                                    pm10=10,
-                                    o3=3,
-                                    uvi=2,
-                                    recorded_at=test_datetime)
+    gateway.insert_air_quality_data(
+        city="Berlin",
+        latitude=52.52,
+        longitude=13.405,
+        aqi=74,
+        dominantpol="pm25",
+        pm25=25,
+        pm10=10,
+        o3=3,
+        uvi=2,
+        recorded_at=test_datetime,
+    )
 
-    gateway.insert_air_quality_data(city="Bogota", latitude=4.60971, longitude=-74.08175, aqi=19,
-                                recorded_at=test_datetime)
+    gateway.insert_air_quality_data(
+        city="Bogota",
+        latitude=4.60971,
+        longitude=-74.08175,
+        aqi=19,
+        recorded_at=test_datetime,
+    )
 
     with Session(gateway.engine) as session:
         # Not using gateway.get_weather_data_by_XX method to isolate the testing
@@ -73,82 +84,95 @@ def test_insert_air_quality_data(gateway):
 
         assert result_bogota is not None
 
+
 def test_unique_city_datetime_constraint(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
 
     # Insert the first record
-    gateway.insert_air_quality_data(city="Berlin",
-                                    latitude=52.52,
-                                    longitude=13.405,
-                                    aqi=74,
-                                    dominantpol="pm25",
-                                    pm25=25,
-                                    pm10=10,
-                                    o3=3,
-                                    uvi=2,
-                                    recorded_at=test_datetime,
-                                    raise_integrity_error=True)
+    gateway.insert_air_quality_data(
+        city="Berlin",
+        latitude=52.52,
+        longitude=13.405,
+        aqi=74,
+        dominantpol="pm25",
+        pm25=25,
+        pm10=10,
+        o3=3,
+        uvi=2,
+        recorded_at=test_datetime,
+        raise_integrity_error=True,
+    )
 
     # Attempt to insert a second record with the same city and datetime
     try:
-        gateway.insert_air_quality_data(city="Berlin",
-                                        latitude=52.52,
-                                        longitude=13.405,
-                                        aqi=74,
-                                        dominantpol="pm25",
-                                        pm25=25,
-                                        pm10=10,
-                                        o3=3,
-                                        uvi=2,
-                                        recorded_at=test_datetime,
-                                        raise_integrity_error=True)
+        gateway.insert_air_quality_data(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=test_datetime,
+            raise_integrity_error=True,
+        )
         assert False, "Expected an IntegrityError due to duplicate city and recorded_at"
     except IntegrityError:
         pass  # Test passes, the constraint was enforced
 
+
 def test_insert_weather_data_duplicate_handling(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
     # Insert the first record
-    gateway.insert_air_quality_data(city="Berlin",
-                                    latitude=52.52,
-                                    longitude=13.405,
-                                    aqi=74,
-                                    dominantpol="pm25",
-                                    pm25=25,
-                                    pm10=10,
-                                    o3=3,
-                                    uvi=2,
-                                    recorded_at=test_datetime)
+    gateway.insert_air_quality_data(
+        city="Berlin",
+        latitude=52.52,
+        longitude=13.405,
+        aqi=74,
+        dominantpol="pm25",
+        pm25=25,
+        pm10=10,
+        o3=3,
+        uvi=2,
+        recorded_at=test_datetime,
+    )
 
     # Attempt to insert a duplicate record
     try:
-        gateway.insert_air_quality_data(city="Berlin",
-                                        latitude=52.52,
-                                        longitude=13.405,
-                                        aqi=74,
-                                        dominantpol="pm25",
-                                        pm25=25,
-                                        pm10=10,
-                                        o3=3,
-                                        uvi=2,
-                                        recorded_at=test_datetime)
+        gateway.insert_air_quality_data(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=test_datetime,
+        )
         assert False, "Expected a ValueError due to duplicate city and recorded_at"
     except ValueError as e:
         assert "Duplicate entry for city 'Berlin'" in str(e)
 
+
 def test_get_weather_data_by_city(gateway):
-    with (Session(gateway.engine) as session):
+    with Session(gateway.engine) as session:
         # Insert mock data directly
-        record = AirQualityRecord(city="Berlin",
-                                    latitude=52.52,
-                                    longitude=13.405,
-                                    aqi=74,
-                                    dominantpol="pm25",
-                                    pm25=25,
-                                    pm10=10,
-                                    o3=3,
-                                    uvi=2,
-                                    recorded_at=datetime.utcnow())
+        record = AirQualityRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
 
@@ -158,19 +182,22 @@ def test_get_weather_data_by_city(gateway):
     assert len(results) == 1
     assert results[0].aqi == 74
 
+
 def test_get_weather_data_by_coords(gateway):
     with Session(gateway.engine) as session:
         # Insert mock data directly
-        record = AirQualityRecord(city="Berlin",
-                                    latitude=52.52,
-                                    longitude=13.405,
-                                    aqi=74,
-                                    dominantpol="pm25",
-                                    pm25=25,
-                                    pm10=10,
-                                    o3=3,
-                                    uvi=2,
-                                    recorded_at=datetime.utcnow())
+        record = AirQualityRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
 
@@ -180,19 +207,22 @@ def test_get_weather_data_by_coords(gateway):
     assert len(results) == 1
     assert results[0].aqi == 74
 
+
 def test_get_weather_data_by_id(gateway):
     with Session(gateway.engine) as session:
         # Insert mock data directly
-        record = AirQualityRecord(city="Berlin",
-                                  latitude=52.52,
-                                  longitude=13.405,
-                                  aqi=74,
-                                  dominantpol="pm25",
-                                  pm25=25,
-                                  pm10=10,
-                                  o3=3,
-                                  uvi=2,
-                                  recorded_at=datetime.utcnow())
+        record = AirQualityRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
         generated_id = record.id
@@ -206,31 +236,35 @@ def test_get_weather_data_by_id(gateway):
     assert result.city == "Berlin"
     assert result.latitude == 52.52
     assert result.longitude == 13.405
-    assert result.aqi==74
-    assert result.dominantpol=="pm25"
-    assert result.pm25==25
-    assert result.pm10==10
-    assert result.o3==3
-    assert result.uvi==2
+    assert result.aqi == 74
+    assert result.dominantpol == "pm25"
+    assert result.pm25 == 25
+    assert result.pm10 == 10
+    assert result.o3 == 3
+    assert result.uvi == 2
     assert result.id == generated_id
+
 
 def test_query_empty_database(gateway):
     data = gateway.get_air_quality_data_by_city("NonExistentCity")
     assert len(data) == 0
 
+
 def test_delete_weather_data(gateway):
     with Session(gateway.engine) as session:
         # Insert a record
-        record = AirQualityRecord(city="Berlin",
-                                  latitude=52.52,
-                                  longitude=13.405,
-                                  aqi=74,
-                                  dominantpol="pm25",
-                                  pm25=25,
-                                  pm10=10,
-                                  o3=3,
-                                  uvi=2,
-                                  recorded_at=datetime.utcnow())
+        record = AirQualityRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
 
@@ -241,19 +275,22 @@ def test_delete_weather_data(gateway):
         result = session.query(AirQualityRecord).filter_by(city="Berlin").first()
         assert result is None
 
+
 def test_transaction_handling(gateway):
     try:
-        gateway.insert_air_quality_data(city="Berlin",
-                                        latitude=52.52,
-                                        longitude=13.405,
-                                        aqi=74,
-                                        dominantpol="pm25",
-                                        pm25=25,
-                                        pm10=10,
-                                        o3=3,
-                                        uvi=2,
-                                        recorded_at=datetime.utcnow(),
-                                        raise_runtime_error=True)
+        gateway.insert_air_quality_data(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            aqi=74,
+            dominantpol="pm25",
+            pm25=25,
+            pm10=10,
+            o3=3,
+            uvi=2,
+            recorded_at=datetime.utcnow(),
+            raise_runtime_error=True,
+        )
     except RuntimeError:
         print("Caught RuntimeError in test.")
         pass
@@ -261,4 +298,5 @@ def test_transaction_handling(gateway):
     data = gateway.get_air_quality_data_by_city("Berlin")
     assert len(data) == 0  # Ensure data wasn't committed
 
-#TODO Add test for proper timezone handling
+
+# TODO Add test for proper timezone handling

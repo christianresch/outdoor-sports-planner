@@ -1,43 +1,46 @@
-from sqlalchemy import create_engine, DateTime, and_
+from sqlalchemy import create_engine, and_
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from components.database_support.weather_record import WeatherRecord
 from typing import Optional, List
 from datetime import datetime
 
-#TODO Add the option to store additional weather information
-class WeatherDataGateway():
+
+# TODO Add the option to store additional weather information
+class WeatherDataGateway:
 
     def __init__(self, db_path: str = "sqlite:///weather.db"):
         self.engine = create_engine(db_path, echo=True)
         self.db_path = db_path
 
-    #TODO Work out the best way to setup the database, most likely as part of the CI/CD pipeline or using something like alembic.
+    # TODO Work out the best way to setup the database (either CI/CD or alembic)
     def create(self):
         WeatherRecord.metadata.create_all(self.engine)
 
-    def insert_weather_data(self,
-                            city: Optional[str],
-                            latitude: float,
-                            longitude: float,
-                            temperature: float,
-                            recorded_at: Optional[datetime] = None,
-                            raise_integrity_error: bool = False,
-                            raise_runtime_error: bool = False):
+    def insert_weather_data(
+        self,
+        city: Optional[str],
+        latitude: float,
+        longitude: float,
+        temperature: float,
+        recorded_at: Optional[datetime] = None,
+        raise_integrity_error: bool = False,
+        raise_runtime_error: bool = False,
+    ):
         recorded_at = recorded_at if recorded_at else datetime.now()
         record = WeatherRecord(
             city=city,
             latitude=latitude,
             longitude=longitude,
             temperature=temperature,
-            recorded_at=recorded_at
+            recorded_at=recorded_at,
         )
 
         with Session(self.engine) as session:
             try:
                 session.add(record)
 
-                #Hook for testing purposes
+                # Hook for testing purposes
                 if raise_runtime_error:
                     raise RuntimeError("Simulated error during transaction")
 
@@ -47,40 +50,74 @@ class WeatherDataGateway():
                 if raise_integrity_error:
                     raise e
                 else:
-                    raise ValueError(f"Duplicate entry for city '{record.city}' and datetime '{record.recorded_at}'")
+                    raise ValueError(
+                        f"Duplicate entry for city '{record.city}' "
+                        f"and datetime '{record.recorded_at}'"
+                    )
             except RuntimeError as e:
                 session.rollback()
-                raise e # Re-raise the exception to ensure it propagates
+                raise e  # Re-raise the exception to ensure it propagates
 
-    def get_weather_data_by_city(self, city: str, recorded_at: Optional[datetime] = None) -> List[WeatherRecord]:
+    def get_weather_data_by_city(
+        self, city: str, recorded_at: Optional[datetime] = None
+    ) -> List[WeatherRecord]:
         if recorded_at:
             with Session(self.engine) as session:
-                # Given the ORM, this should always only return one entry given that city+recorded_at is a unique identifier (and there are test to ensure this). But query with .all() should return this as a list with one entry.
-                record = session.query(WeatherRecord).filter(
-                    and_(WeatherRecord.city == city,
-                         WeatherRecord.recorded_at == recorded_at)
-                ).all()
+                """
+                Given the ORM, this should always only return one entry given that
+                city+recorded_at is a unique identifier (and there are test to ensure
+                this). But query with .all() should return this as a list with one
+                entry.
+                """
+                record = (
+                    session.query(WeatherRecord)
+                    .filter(
+                        and_(
+                            WeatherRecord.city == city,
+                            WeatherRecord.recorded_at == recorded_at,
+                        )
+                    )
+                    .all()
+                )
                 return record
         else:
             with Session(self.engine) as session:
-                records = session.query(WeatherRecord).filter(WeatherRecord.city == city).all()
+                records = (
+                    session.query(WeatherRecord)
+                    .filter(WeatherRecord.city == city)
+                    .all()
+                )
                 return records
 
-    def get_weather_data_by_coords(self, latitude: float, longitude: float, recorded_at: Optional[datetime] = None) -> List[WeatherRecord]:
+    def get_weather_data_by_coords(
+        self, latitude: float, longitude: float, recorded_at: Optional[datetime] = None
+    ) -> List[WeatherRecord]:
         if recorded_at:
             with Session(self.engine) as session:
-                record = session.query(WeatherRecord).filter(
-                    and_(WeatherRecord.latitude == latitude,
-                         WeatherRecord.longitude == longitude,
-                         WeatherRecord.recorded_at == recorded_at)
-                ).all()
+                record = (
+                    session.query(WeatherRecord)
+                    .filter(
+                        and_(
+                            WeatherRecord.latitude == latitude,
+                            WeatherRecord.longitude == longitude,
+                            WeatherRecord.recorded_at == recorded_at,
+                        )
+                    )
+                    .all()
+                )
                 return record
         else:
             with Session(self.engine) as session:
-                records = session.query(WeatherRecord).filter(
-                    and_(WeatherRecord.latitude == latitude,
-                         WeatherRecord.longitude == longitude)
-                ).all()
+                records = (
+                    session.query(WeatherRecord)
+                    .filter(
+                        and_(
+                            WeatherRecord.latitude == latitude,
+                            WeatherRecord.longitude == longitude,
+                        )
+                    )
+                    .all()
+                )
                 return records
 
     def get_weather_data_by_id(self, id: int) -> WeatherRecord:

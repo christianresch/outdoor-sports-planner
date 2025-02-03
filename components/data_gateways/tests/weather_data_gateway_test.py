@@ -6,15 +6,18 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import inspect
 from datetime import datetime
 
+
 @pytest.fixture
 def gateway():
     gateway = WeatherDataGateway(db_path="sqlite:///:memory:")
     gateway.create()
     return gateway
 
+
 def test_database_connection(gateway):
     assert gateway.engine is not None
     assert str(gateway.engine.url) == "sqlite:///:memory:"
+
 
 def test_create_weather_database(gateway):
 
@@ -32,13 +35,24 @@ def test_create_weather_database(gateway):
     assert "temperature" in column_names
     assert "recorded_at" in column_names
 
+
 def test_insert_weather_data(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
-    gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5,
-                                recorded_at=test_datetime)
+    gateway.insert_weather_data(
+        city="Berlin",
+        latitude=52.52,
+        longitude=13.405,
+        temperature=20.5,
+        recorded_at=test_datetime,
+    )
 
-    gateway.insert_weather_data(city="Bogota", latitude=4.60971, longitude=-74.08175, temperature=19,
-                                recorded_at=test_datetime)
+    gateway.insert_weather_data(
+        city="Bogota",
+        latitude=4.60971,
+        longitude=-74.08175,
+        temperature=19,
+        recorded_at=test_datetime,
+    )
 
     with Session(gateway.engine) as session:
         # Not using gateway.get_weather_data_by_XX method to isolate the testing
@@ -55,36 +69,70 @@ def test_insert_weather_data(gateway):
 
         assert result_bogota is not None
 
+
 def test_unique_city_datetime_constraint(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
 
     # Insert the first record
-    gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5, recorded_at=test_datetime, raise_integrity_error=True)
+    gateway.insert_weather_data(
+        city="Berlin",
+        latitude=52.52,
+        longitude=13.405,
+        temperature=20.5,
+        recorded_at=test_datetime,
+        raise_integrity_error=True,
+    )
 
     # Attempt to insert a second record with the same city and datetime
     try:
-        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0, recorded_at=test_datetime, raise_integrity_error=True)
+        gateway.insert_weather_data(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=22.0,
+            recorded_at=test_datetime,
+            raise_integrity_error=True,
+        )
         assert False, "Expected an IntegrityError due to duplicate city and recorded_at"
     except IntegrityError:
         pass  # Test passes, the constraint was enforced
 
+
 def test_insert_weather_data_duplicate_handling(gateway):
     test_datetime = datetime(2024, 11, 28, 12, 0, 0)
     # Insert the first record
-    gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5, recorded_at=test_datetime)
+    gateway.insert_weather_data(
+        city="Berlin",
+        latitude=52.52,
+        longitude=13.405,
+        temperature=20.5,
+        recorded_at=test_datetime,
+    )
 
     # Attempt to insert a duplicate record
     try:
-        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0, recorded_at=test_datetime)
+        gateway.insert_weather_data(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=22.0,
+            recorded_at=test_datetime,
+        )
         assert False, "Expected a ValueError due to duplicate city and recorded_at"
     except ValueError as e:
         assert "Duplicate entry for city 'Berlin'" in str(e)
 
+
 def test_get_weather_data_by_city(gateway):
     with Session(gateway.engine) as session:
         # Insert mock data directly
-        record = WeatherRecord(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5,
-                               recorded_at=datetime.utcnow())
+        record = WeatherRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=20.5,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
 
@@ -94,11 +142,17 @@ def test_get_weather_data_by_city(gateway):
     assert len(results) == 1
     assert results[0].temperature == 20.5
 
+
 def test_get_weather_data_by_coords(gateway):
     with Session(gateway.engine) as session:
         # Insert mock data directly
-        record = WeatherRecord(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5,
-                               recorded_at=datetime.utcnow())
+        record = WeatherRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=20.5,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
 
@@ -108,11 +162,17 @@ def test_get_weather_data_by_coords(gateway):
     assert len(results) == 1
     assert results[0].temperature == 20.5
 
+
 def test_get_weather_data_by_id(gateway):
     with Session(gateway.engine) as session:
         # Insert mock data directly
-        record = WeatherRecord(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5,
-                               recorded_at=datetime.utcnow())
+        record = WeatherRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=20.5,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
         generated_id = record.id
@@ -129,14 +189,22 @@ def test_get_weather_data_by_id(gateway):
     assert result.temperature == 20.5
     assert result.id == generated_id
 
+
 def test_query_empty_database(gateway):
     data = gateway.get_weather_data_by_city("NonExistentCity")
     assert len(data) == 0
 
+
 def test_delete_weather_data(gateway):
     with Session(gateway.engine) as session:
         # Insert a record
-        record = WeatherRecord(city="Berlin", latitude=52.52, longitude=13.405, temperature=20.5, recorded_at=datetime.utcnow())
+        record = WeatherRecord(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=20.5,
+            recorded_at=datetime.utcnow(),
+        )
         session.add(record)
         session.commit()
 
@@ -147,9 +215,16 @@ def test_delete_weather_data(gateway):
         result = session.query(WeatherRecord).filter_by(city="Berlin").first()
         assert result is None
 
+
 def test_transaction_handling(gateway):
     try:
-        gateway.insert_weather_data(city="Berlin", latitude=52.52, longitude=13.405, temperature=22.0, raise_runtime_error=True)
+        gateway.insert_weather_data(
+            city="Berlin",
+            latitude=52.52,
+            longitude=13.405,
+            temperature=22.0,
+            raise_runtime_error=True,
+        )
     except RuntimeError:
         print("Caught RuntimeError in test.")
         pass
@@ -157,4 +232,5 @@ def test_transaction_handling(gateway):
     data = gateway.get_weather_data_by_city("Berlin")
     assert len(data) == 0  # Ensure data wasn't committed
 
-#TODO Add test for proper timezone handling
+
+# TODO Add test for proper timezone handling

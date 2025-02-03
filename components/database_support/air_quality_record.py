@@ -3,9 +3,10 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 # Define WeatherRecord Table
 class AirQualityRecord(Base):
-    __tablename__ = 'air_quality_records'
+    __tablename__ = "air_quality_records"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     city = Column(String, nullable=True)

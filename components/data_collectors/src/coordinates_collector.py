@@ -1,7 +1,8 @@
 from typing import Tuple
 import requests
 
-class CoordinatesCollector():
+
+class CoordinatesCollector:
 
     def __init__(self):
         pass
@@ -11,16 +12,19 @@ class CoordinatesCollector():
         if not isinstance(city_name, str):
             raise ValueError("City not found. Check your input.")
 
-        response = requests.get(f'https://geocoding-api.open-meteo.com/v1/search?name={city_name}&count=1&language=en&format=json',
-                                timeout = 10)
+        response = requests.get(
+            url=f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}"
+            f"&count=1&language=en&format=json",
+            timeout=10,
+        )
 
         try:
-            results = response.json()['results'][0]
-        except KeyError as e:
+            results = response.json()["results"][0]
+        except KeyError:
             return None
 
-        latitude = results['latitude']
-        longitude = results['longitude']
+        latitude = results["latitude"]
+        longitude = results["longitude"]
 
-        # Tuple as latitude, then longitude order is fairly standard and Tuples are more efficient
+        # (latitude, longitude) tuple is fairly standard
         return (latitude, longitude)
