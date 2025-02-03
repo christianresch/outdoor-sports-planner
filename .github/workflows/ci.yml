@@ -1,0 +1,31 @@
+name: CI Pipeline
+
+on: [push, pull_request]  # Runs on push and pull requests
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4  # Fetch the repo content
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          poetry install  # Install dependencies from pyproject.toml
+
+      - name: Run Linter (flake8)
+        run: poetry run flake8 app tests
+
+      - name: Run Formatting Check (black)
+        run: poetry run black --check app tests
+
+      - name: Run Tests
+        run: poetry run pytest
