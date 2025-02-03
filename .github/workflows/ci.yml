@@ -22,10 +22,10 @@ jobs:
           poetry install  # Install dependencies from pyproject.toml
 
       - name: Run Linter (flake8)
-        run: poetry run flake8 app tests
+        run: poetry run flake8 .
 
       - name: Run Formatting Check (black)
-        run: poetry run black --check app tests
+        run: poetry run black --check .
 
       - name: Run Tests
         run: poetry run pytest
