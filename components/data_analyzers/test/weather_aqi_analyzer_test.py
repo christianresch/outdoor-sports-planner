@@ -40,11 +40,3 @@ class TestWeatherAQIAnalyzer(unittest.TestCase):
         assert prediction[0]["date"] == self.mock_results[0]["date"]
         assert prediction[1]["date"] == self.mock_results[1]["date"]
         assert prediction[2]["date"] == self.mock_results[2]["date"]
-
-    def test_wrong_input(self):
-        # TODO Add test for wrong input format
-        pass
-
-    def test_predict_no_sport(self):
-        # TODO Add test for prediction that no day is level 3 or better
-        pass

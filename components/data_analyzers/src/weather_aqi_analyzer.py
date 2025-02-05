@@ -4,44 +4,17 @@ from components.data_analyzers.src.aqi_calculator import AQICalculator
 from typing import List, Dict, Optional
 from datetime import datetime
 import pandas as pd
+import json
+import os
 
 
 class WeatherAQIAnalyzer:
 
-    # TODO Move this into a json
-    aqi_categories = {
-        "Good": {"lower_bound": 0, "upper_bound": 50, "color": "green", "level": 1},
-        "Moderate": {
-            "lower_bound": 51,
-            "upper_bound": 100,
-            "color": "yellow",
-            "level": 2,
-        },
-        "Unhealthy for sensitive groups": {
-            "lower_bound": 101,
-            "upper_bound": 150,
-            "color": "orange",
-            "level": 3,
-        },
-        "Unhealthy": {
-            "lower_bound": 151,
-            "upper_bound": 200,
-            "color": "red",
-            "level": 4,
-        },
-        "Very unhealthy": {
-            "lower_bound": 201,
-            "upper_bound": 300,
-            "color": "purple",
-            "level": 5,
-        },
-        "Hazardous": {
-            "lower_bound": 301,
-            "upper_bound": None,
-            "color": "maroon",
-            "level": 6,
-        },
-    }
+    _current_dir = os.path.dirname(os.path.abspath(__file__))
+    _aqi_categories_path = os.path.join(_current_dir, "aqi_categories.json")
+
+    with open(_aqi_categories_path, "r") as file:
+        aqi_categories = json.load(file)
 
     def __init__(
         self,
@@ -140,7 +113,6 @@ class WeatherAQIAnalyzer:
 
         data["date"] = data["date"].dt.date
 
-        # TODO Add test that ensures JSON serialization, i.e. no nan in the output
         data = data.replace({float("nan"): None})
 
         result = data.to_dict(orient="records")
