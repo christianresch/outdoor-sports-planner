@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from starlette.responses import Response
+from fastapi.templating import Jinja2Templates
 from loguru import logger
 import httpx
 from prometheus_fastapi_instrumentator import Instrumentator
@@ -8,13 +8,20 @@ import os
 
 app = FastAPI()
 
+# 1. Point Jinja2Templates to your templates folder
+current_dir = os.path.dirname(os.path.abspath(__file__))
+templates_path = os.path.join(current_dir, "templates")
+templates = Jinja2Templates(directory=templates_path)
+
 Instrumentator().instrument(app).expose(app)
 
 DATA_ANALYZER_URL = os.getenv("DATA_ANALYZER_URL", "http://localhost:8001/analyze")
 
 
 @app.get("/", response_class=HTMLResponse)
-async def main():
+async def main(request: Request):
+    return templates.TemplateResponse(request, "index.html")
+    '''
     # TODO Move the html somewhere else
     return """
     <h1> Outdoor sports planner</h1>
@@ -26,10 +33,11 @@ async def main():
          <input type="submit" value="Submit!">
      </form>
      """
+     '''
 
 
-@app.post("/best_outdoor_sports_day")
-async def best_outdoor_sports_day(user_input: str = Form(...)):
+@app.post("/best_outdoor_sports_day", response_class=HTMLResponse)
+async def best_outdoor_sports_day(request: Request, user_input: str = Form(...)):
     user_input = user_input.capitalize()
 
     logger.info(f"Request received with {user_input}")
@@ -55,17 +63,9 @@ async def best_outdoor_sports_day(user_input: str = Form(...)):
 
     # Analyzer gives an empty result if no forecasts or the location cannot be found.
     if len(data_analyzer_response) == 0:
-        html_content = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-        </head>
-        <body>
-            Please apologise. We cannot provide you with a forecast as we either cannot
-             locate the city provided or no data is currently available for your city.
-        """
-        return Response(content=html_content, media_type="text/html")
+        return templates.TemplateResponse(request, "prediction_unavailable.html")
 
+    '''
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -83,6 +83,12 @@ async def best_outdoor_sports_day(user_input: str = Form(...)):
         hours of rain forecasted.
     """
     return Response(content=html_content, media_type="text/html")
+    '''
+    return templates.TemplateResponse(
+        request=request,
+        name="prediction.html",
+        context={"user_input": user_input, "data": data_analyzer_response},
+    )
 
 
 @app.get("/health-check")

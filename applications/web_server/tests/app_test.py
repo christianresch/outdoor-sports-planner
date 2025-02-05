@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from fastapi import Request
 import os
 import pickle
 from applications.web_server.src.app import app, best_outdoor_sports_day
@@ -37,7 +38,9 @@ async def test_prediction(httpx_mock):
         json=mock_results,
         status_code=200,
     )
-    response = await best_outdoor_sports_day(user_input="Bogota")
+
+    request = Request(scope={"type": "http"})  # Minimal dummy request object
+    response = await best_outdoor_sports_day(request=request, user_input="Bogota")
     logger.debug(f"Test response: {response}")
 
     assert response.status_code == 200

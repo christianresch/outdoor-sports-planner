@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Outdoor Sports Forecast</title>
+</head>
+<body>
+    <h1>Your outdoor sports prediction for {{ user_input }}</h1>
+    <p>
+        You are in <b>{{ user_input }}</b>. Your best outdoor sports day in the coming
+        days is <b>{{ data[0].date }}</b>.
+    </p>
+    <p>
+        The Air Quality Index on <b>{{ data[0].date }}</b> will be <b>{{ data[0].aqi }}</b>.<br>
+        The temperature will be <b>{{ data[0].temperature_2m_max | round(2) }}</b> degrees Celsius.<br>
+        There are <b>{{ data[0].precipitation_hours | round(0) }}</b> hours of rain forecasted.
+    </p>
+</body>
+</html>
