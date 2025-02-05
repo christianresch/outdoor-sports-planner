@@ -7,14 +7,19 @@ import unittest
 from unittest.mock import MagicMock
 import json
 from dotenv import load_dotenv
+import os
 
 
 class TestWeatherDataCollector(unittest.TestCase):
 
     def setUp(self):
-        # TODO Make this work if not run from root directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        test_aqicn_json_response_path = os.path.join(
+            current_dir, "test_aqicn_json_response.json"
+        )
+
         self.test_json_response: AirQualityData = self.__load_test_data__(
-            "components/data_collectors/tests/test_aqicn_json_response.json"
+            test_aqicn_json_response_path
         )
 
         self.air_quality_data_collector = AirQualityDataCollector()
