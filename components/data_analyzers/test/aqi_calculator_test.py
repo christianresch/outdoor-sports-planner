@@ -8,8 +8,8 @@ class TestAQICalculator(unittest.TestCase):
         self.aqi_calculator = AQICalculator()
 
     def test_calculate_aqi(self):
-        self.aqi_calculator.pm25 = 24
-        self.aqi_calculator.pm10 = 25
+        self.aqi_calculator._pm25 = 24
+        self.aqi_calculator._pm10 = 25
 
         aqi = self.aqi_calculator.calculate_aqi()
 

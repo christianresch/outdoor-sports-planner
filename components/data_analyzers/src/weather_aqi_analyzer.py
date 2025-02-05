@@ -166,7 +166,6 @@ class WeatherAQIAnalyzer:
             date = forecast["date"]
             pm10 = forecast["avg"]
 
-            # TODO Add error handling for KeyError here
             # In case there are pm10 but no pm25 forecasts for a given date
             combined_air_quality_data[date]["pm10"] = pm10
 

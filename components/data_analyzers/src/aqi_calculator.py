@@ -6,16 +6,18 @@ import json
 
 class AQICalculator:
 
-    pollutants_list = ["pm25", "pm10"]
+    _pollutants_list = ["_pm25", "_pm10"]
 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    pollutant_breakpoints_path = os.path.join(current_dir, "pollutant_breakpoints.json")
+    _current_dir = os.path.dirname(os.path.abspath(__file__))
+    _pollutant_breakpoints_path = os.path.join(
+        _current_dir, "pollutant_breakpoints.json"
+    )
 
-    with open(pollutant_breakpoints_path, "r") as file:
+    with open(_pollutant_breakpoints_path, "r") as file:
         pollutant_breakpoints = json.load(file)
 
-    pm25_breakpoints = pollutant_breakpoints["pm25_breakpoints"]
-    pm10_breakpoints = pollutant_breakpoints["pm10_breakpoints"]
+    _pm25_breakpoints = pollutant_breakpoints["pm25_breakpoints"]
+    _pm10_breakpoints = pollutant_breakpoints["pm10_breakpoints"]
     # o3_breakpoints = pollutant_breakpoints['o3_breakpoints']
 
     def __init__(
@@ -25,13 +27,12 @@ class AQICalculator:
         pm10: Optional[float] = None,
         pollutant_breakpoints_path: Optional[str] = None,
     ):
-        # TODO Turn these into private attributes and add getter and setter methods
         if dominantpol:
-            self.dominantpol = dominantpol
+            self._dominantpol = dominantpol
         if pm25:
-            self.pm25 = round(pm25, 1)
+            self._pm25 = round(pm25, 1)
         if pm10:
-            self.pm10 = math.trunc(pm10)
+            self._pm10 = math.trunc(pm10)
         # In case o3 should be later added
         # if o3:
         # self.o3 = round(o3, 3)
@@ -43,14 +44,13 @@ class AQICalculator:
             with open(pollutant_breakpoints_path, "r") as file:
                 pollutant_breakpoints = json.load(file)
 
-            self.pm25_breakpoints = pollutant_breakpoints["pm25_breakpoints"]
-            self.pm10_breakpoints = pollutant_breakpoints["pm10_breakpoints"]
-            # self.o3_breakpoints = pollutant_breakpoints['o3_breakpoints']
+            self._pm25_breakpoints = pollutant_breakpoints["pm25_breakpoints"]
+            self._pm10_breakpoints = pollutant_breakpoints["pm10_breakpoints"]
+            # self._o3_breakpoints = pollutant_breakpoints['o3_breakpoints']
 
-    # TODO Add getter and setter methods!
     def calculate_aqi(self) -> float:
 
-        if all(v not in self.__dict__.keys() for v in self.pollutants_list):
+        if all(v not in self.__dict__.keys() for v in self._pollutants_list):
             raise ValueError(
                 "No pollutants provided. "
                 "You need to provide at least one of "
@@ -65,7 +65,7 @@ class AQICalculator:
 
         aqi: float = 0
 
-        for pollutant in self.pollutants_list:
+        for pollutant in self._pollutants_list:
             pollutant_concentration = getattr(self, pollutant, None)
 
             pollutant_aqi = self.__calculate_pollutant_aqi__(
@@ -114,3 +114,27 @@ class AQICalculator:
         ) + aqi_low
 
         return round(pollutant_aqi, 2)
+
+    def set_pm25(self, pm25: float):
+        self._pm25 = pm25
+
+    def get_pm25(self) -> float:
+        return self._pm25
+
+    def set_pm10(self, pm10: float):
+        self._pm10 = pm10
+
+    def get_pm10(self) -> float:
+        return self._pm10
+
+    def set_pm25_breakpoints(self, pm25_breakpoints: dict):
+        self._pm25_breakpoints = pm25_breakpoints
+
+    def get_pm25_breakpoints(self) -> dict:
+        return self._pm25_breakpoints
+
+    def set_pm10_breakpoints(self, pm10_breakpoints: dict):
+        self._pm10_breakpoints = pm10_breakpoints
+
+    def get_pm10_breakpoints(self) -> dict:
+        return self._pm10_breakpoints
