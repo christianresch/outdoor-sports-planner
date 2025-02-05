@@ -34,7 +34,6 @@ class WeatherDataCollector:
         self,
         latitude: float,
         longitude: float,
-        # TODO Add more current weather data
         current: str = "temperature_2m",
         daily: [str] = [
             "weather_code",

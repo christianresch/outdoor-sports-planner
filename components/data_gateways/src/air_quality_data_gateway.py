@@ -12,8 +12,6 @@ class AirQualityDataGateway:
         self.engine = create_engine(db_path, echo=True)
         self.db_path = db_path
 
-        # TODO Work out the best way to setup the database (either CI/CD or alembic)
-
     def create(self):
         AirQualityRecord.metadata.create_all(self.engine)
 

@@ -138,7 +138,7 @@ class AirQualityDataCollector:
             "city": city,  # AQICN returns cities in local script
             "latitude": data["city"]["geo"][0],
             "longitude": data["city"]["geo"][1],
-            "datetime": datetime.now(),  # TODO Add here the time returned by the API
+            "datetime": datetime.now(),
             "aqi": data["aqi"],
             "dominentpol": data["dominentpol"],
         }
