@@ -121,12 +121,6 @@ class TestWeatherDataCollector(unittest.TestCase):
                 91.0, 181.0
             )  # Invalid latitude and longitude
 
-    # TODO test_API_unexpected_data_format
-
-    # TODO add test for over quota
-
-    # TODO add test for proper time zone handling
-
     def __load_test_data__(self, test_data: str):
         with open(test_data, "r") as file:
             return json.load(file)
