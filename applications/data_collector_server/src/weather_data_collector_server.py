@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from loguru import logger
 import os
+from sqlalchemy.exc import IntegrityError
 from components.data_collectors.src.weather_data_collector import WeatherDataCollector
 from components.data_collectors.src.coordinates_collector import CoordinatesCollector
 from components.data_gateways.src.weather_data_gateway import WeatherDataGateway
@@ -42,6 +43,7 @@ async def collect(
     data: RequestData,
     collector: WeatherDataCollector = Depends(get_collector),
     coordinates_collector: CoordinatesCollector = Depends(get_coordinates_collector),
+    weather_data_gateway: WeatherDataGateway = Depends(get_weather_data_gateway),
 ):
     logger.info(
         f"Request received with city: {data.city}, "
@@ -62,6 +64,33 @@ async def collect(
         result = collector.get_weather_data(latitude, longitude)
     else:
         result = collector.get_weather_data(data.latitude, data.longitude)
+
+    # Ensuring database exists
+    weather_data_gateway.create()
+
+    # Storing data if it does not yet exist
+    if result:
+        temperature = result[0]["temperature_2m_max"]
+
+        try:
+            if data.city is not None:
+                latitude, longitude = coordinates_collector.get_coordinates(data.city)
+                city = data.city
+
+                weather_data_gateway.insert_weather_data(
+                    city=city,
+                    latitude=latitude,
+                    longitude=longitude,
+                    temperature=temperature,
+                )
+            else:
+                weather_data_gateway.insert_weather_data(
+                    latitude=data.latitude,
+                    longitude=data.longitude,
+                    temperature=temperature,
+                )
+        except IntegrityError:
+            pass
 
     logger.info("Returning data...")
     return result

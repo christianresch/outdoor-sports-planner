@@ -76,22 +76,23 @@ async def collect(
     aqi_data_gateway.create()
 
     # Storing data if it does not yet exist
-    try:
-        city = result["city"]
-        latitude = result["latitude"]
-        longitude = result["longitude"]
-        aqi = result["aqi"]
-        dominentpol = result["dominentpol"]
+    if result:
+        try:
+            city = result["city"]
+            latitude = result["latitude"]
+            longitude = result["longitude"]
+            aqi = result["aqi"]
+            dominentpol = result["dominentpol"]
 
-        aqi_data_gateway.insert_air_quality_data(
-            city=city,
-            latitude=latitude,
-            longitude=longitude,
-            aqi=aqi,
-            dominantpol=dominentpol,
-        )
-    except IntegrityError:
-        pass
+            aqi_data_gateway.insert_air_quality_data(
+                city=city,
+                latitude=latitude,
+                longitude=longitude,
+                aqi=aqi,
+                dominantpol=dominentpol,
+            )
+        except IntegrityError:
+            pass
 
     logger.info("Returning data...")
     return result
