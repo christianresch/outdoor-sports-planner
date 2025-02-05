@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from loguru import logger
 import os
+from sqlalchemy.exc import IntegrityError
 from components.data_collectors.src.air_quality_data_collector import (
     AirQualityDataCollector,
 )
@@ -45,6 +46,7 @@ async def collect(
     data: RequestData,
     collector: AirQualityDataCollector = Depends(get_collector),
     coordinates_collector: CoordinatesCollector = Depends(get_coordinates_collector),
+    aqi_data_gateway: AirQualityDataGateway = Depends(get_aqi_data_gateway),
 ):
     logger.info(
         f"Request received with city: "
@@ -69,6 +71,27 @@ async def collect(
             result = collector.get_air_quality_data_by_coords(latitude, longitude)
     else:
         result = collector.get_air_quality_data_by_coords(data.latitude, data.longitude)
+
+    # Ensuring database exists
+    aqi_data_gateway.create()
+
+    # Storing data if it does not yet exist
+    try:
+        city = result["city"]
+        latitude = result["latitude"]
+        longitude = result["longitude"]
+        aqi = result["aqi"]
+        dominentpol = result["dominentpol"]
+
+        aqi_data_gateway.insert_air_quality_data(
+            city=city,
+            latitude=latitude,
+            longitude=longitude,
+            aqi=aqi,
+            dominantpol=dominentpol,
+        )
+    except IntegrityError:
+        pass
 
     logger.info("Returning data...")
     return result
