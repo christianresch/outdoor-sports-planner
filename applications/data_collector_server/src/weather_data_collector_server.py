@@ -45,6 +45,8 @@ async def collect(
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+    logger.info("Making request...")
+
     if data.city is not None:
         latitude, longitude = coordinates_collector.get_coordinates(data.city)
 

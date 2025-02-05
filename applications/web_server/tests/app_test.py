@@ -8,7 +8,7 @@ from loguru import logger
 # No need to shut down manually as these are only simply unit tests
 client = TestClient(app)
 
-DATA_ANALYZER_API_URL = "http://localhost:8003/analyze"
+DATA_ANALYZER_API_URL = "http://localhost:8001/analyze"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 

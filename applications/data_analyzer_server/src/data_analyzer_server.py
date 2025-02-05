@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from loguru import logger
 import httpx
 from components.data_analyzers.src.weather_aqi_analyzer import WeatherAQIAnalyzer
+import os
 
 
 def get_analyzer():
@@ -12,10 +13,9 @@ def get_analyzer():
 app = FastAPI()
 
 # API URLs for the data collector servers
-WEATHER_API_URL = "http://localhost:8001/collect"
+WEATHER_API_URL = os.getenv("WEATHER_API_URL", "http://localhost:8002/collect")
 
-
-AIR_QUALITY_API_URL = "http://localhost:8002/collect"
+AIR_QUALITY_API_URL = os.getenv("AIR_QUALITY_API_URL", "http://localhost:8003/collect")
 
 
 # Input schema

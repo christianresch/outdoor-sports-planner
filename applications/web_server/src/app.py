@@ -4,13 +4,13 @@ from starlette.responses import Response
 from loguru import logger
 import httpx
 from prometheus_fastapi_instrumentator import Instrumentator
+import os
 
 app = FastAPI()
 
 Instrumentator().instrument(app).expose(app)
 
-# TODO Adapt this!
-DATA_ANALYZER_API_URL = "http://localhost:8003/analyze"
+DATA_ANALYZER_URL = os.getenv("DATA_ANALYZER_URL", "http://localhost:8001/analyze")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -44,7 +44,7 @@ async def best_outdoor_sports_day(user_input: str = Form(...)):
 
     async with httpx.AsyncClient() as client:
         logger.info(f"Fetching best sports day with params: {params}")
-        data_analyzer_response = await client.post(DATA_ANALYZER_API_URL, json=params)
+        data_analyzer_response = await client.post(DATA_ANALYZER_URL, json=params)
         if data_analyzer_response.status_code != 200:
             raise HTTPException(
                 status_code=data_analyzer_response.status_code,

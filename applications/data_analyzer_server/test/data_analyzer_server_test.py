@@ -12,8 +12,8 @@ from loguru import logger
 
 # Integration tests
 
-WEATHER_API_URL = "http://localhost:8001/collect"
-AIR_QUALITY_API_URL = "http://localhost:8002/collect"
+WEATHER_API_URL = "http://localhost:8002/collect"
+AIR_QUALITY_API_URL = "http://localhost:8003/collect"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
