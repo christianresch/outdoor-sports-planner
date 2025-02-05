@@ -17,6 +17,9 @@ WEATHER_API_URL = os.getenv("WEATHER_API_URL", "http://localhost:8002/collect")
 
 AIR_QUALITY_API_URL = os.getenv("AIR_QUALITY_API_URL", "http://localhost:8003/collect")
 
+logger.info(f"WEATHER_API_URL is set to: {WEATHER_API_URL}")
+logger.info(f"AIR_QUALITY_API_URL is set to: {AIR_QUALITY_API_URL}")
+
 
 # Input schema
 class RequestData(BaseModel):
