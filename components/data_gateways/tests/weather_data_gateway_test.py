@@ -231,6 +231,3 @@ def test_transaction_handling(gateway):
 
     data = gateway.get_weather_data_by_city("Berlin")
     assert len(data) == 0  # Ensure data wasn't committed
-
-
-# TODO Add test for proper timezone handling

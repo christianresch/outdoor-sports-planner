@@ -58,8 +58,6 @@ class WeatherDataCollector:
             "timezone": "auto",  # Let's open-meteo automatically detect the timezone
         }
 
-        # TODO Figure out how OpenMeteo API communicate HTTP Error codes
-
         if only_current:
             responses = self._make_request(params)
 

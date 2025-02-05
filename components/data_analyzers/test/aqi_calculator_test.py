@@ -18,5 +18,3 @@ class TestAQICalculator(unittest.TestCase):
     def test_no_pollutants_provided(self):
         with self.assertRaises(ValueError):
             self.aqi_calculator.calculate_aqi()
-
-    # TODO Add edge cases: All pollutants 0 or all pollutants incredibly high

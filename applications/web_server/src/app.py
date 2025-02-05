@@ -32,12 +32,7 @@ async def main():
 async def best_outdoor_sports_day(user_input: str = Form(...)):
     user_input = user_input.capitalize()
 
-    # TODO Fix this
-    logger.info(
-        f"Request received with city: {user_input}, "
-        f"latitude: to be added and "
-        f"longitude: to be added"
-    )
+    logger.info(f"Request received with {user_input}")
 
     params = {}
     params["city"] = user_input
