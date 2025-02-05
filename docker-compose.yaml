@@ -8,7 +8,6 @@ services:
       dockerfile: Dockerfile.web
     container_name: web_container
     environment:
-      # If your web server needs to call the analyzer
       DATA_ANALYZER_URL: "http://analyzer:8001/analyze"
     depends_on:
       - analyzer  # ensures analyzer is up before web tries to call it
@@ -23,18 +22,9 @@ services:
       context: .
       dockerfile: Dockerfile.analyzer
     container_name: analyzer_container
-    # Only the analyzer interacts with the SQLite DB
     environment:
-      # SQLite path (inside container). The file will be stored in /app/data
-      SQLITE_WEATHER_DB_PATH: "sqlite:////app/data/weather.db"
-      SQLITE_AQI_DB_PATH: "sqlite:////app/data/aqi.db"
-
-      # If analyzer fetches data from the collectors:
       WEATHER_API_URL: "http://weather:8002/collect"
       AIR_QUALITY_API_URL: "http://aqi:8003/collect"
-    # Volume for storing the SQLite file, so we don't lose data on container rebuild
-    volumes:
-      - db_data:/app/data
     depends_on:
       - weather
       - aqi
@@ -50,7 +40,11 @@ services:
       dockerfile: Dockerfile.weather
     container_name: weather_container
     environment:
-      - AQICN_TOKEN
+      AQICN_TOKEN: ${AQICN_TOKEN}
+      SQLITE_WEATHER_DB_PATH: "sqlite:////app/data/weather.db"
+    # Volume for storing the SQLite file, so we don't lose data on container rebuild
+    volumes:
+      - db_data:/app/data
     ports:
       - "8002:8002"
 
@@ -62,6 +56,11 @@ services:
       context: .
       dockerfile: Dockerfile.aqi
     container_name: aqi_container
+    environment:
+      # SQLite path (inside container). The file will be stored in /app/data
+      SQLITE_AQI_DB_PATH: "sqlite:////app/data/aqi.db"
+    volumes:
+      - db_data:/app/data
     ports:
       - "8003:8003"
 

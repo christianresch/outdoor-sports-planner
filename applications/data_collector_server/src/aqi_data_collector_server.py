@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from loguru import logger
+import os
 from components.data_collectors.src.air_quality_data_collector import (
     AirQualityDataCollector,
 )
 from components.data_collectors.src.coordinates_collector import CoordinatesCollector
+from components.data_gateways.src.air_quality_data_gateway import AirQualityDataGateway
 
 
 def get_collector():
@@ -13,6 +15,14 @@ def get_collector():
 
 def get_coordinates_collector():
     return CoordinatesCollector()
+
+
+# Read the environment variable
+SQLITE_AQI_DB_PATH = os.getenv("SQLITE_AQI_DB_PATH", "sqlite:///aqi.db")
+
+
+def get_aqi_data_gateway():
+    return AirQualityDataGateway(db_path=SQLITE_AQI_DB_PATH)
 
 
 app = FastAPI()

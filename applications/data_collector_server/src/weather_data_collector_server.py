@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import BaseModel
 from loguru import logger
+import os
 from components.data_collectors.src.weather_data_collector import WeatherDataCollector
 from components.data_collectors.src.coordinates_collector import CoordinatesCollector
+from components.data_gateways.src.weather_data_gateway import WeatherDataGateway
 
 
 def get_collector():
@@ -11,6 +13,13 @@ def get_collector():
 
 def get_coordinates_collector():
     return CoordinatesCollector()
+
+
+SQLITE_WEATHER_DB_PATH = os.getenv("SQLITE_WEATHER_DB_PATH", "sqlite:///weather.db")
+
+
+def get_weather_data_gateway():
+    return WeatherDataGateway(db_path=SQLITE_WEATHER_DB_PATH)
 
 
 app = FastAPI()
