@@ -20,6 +20,6 @@ repos:
     hooks:
       - id: pytest
         name: Run tests
-        entry: poetry run pytest
+        entry: pytest --rootdir=.
         language: system
         types: [python]
