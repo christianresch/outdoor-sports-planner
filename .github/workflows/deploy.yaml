@@ -1,0 +1,31 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Change this if your deployment branch is different
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: 52.201.245.233
+          EC2_USER: ubuntu
+          SSH_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          # Connect to EC2 and deploy
+          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+            cd /outdoor-sports-planner
+            git pull origin main
+            docker-compose down
+            docker-compose up -d --build
+          EOF
