@@ -16,6 +16,7 @@ def get_coordinates_collector():
     return CoordinatesCollector()
 
 
+# For docker, read database path from environment
 SQLITE_WEATHER_DB_PATH = os.getenv("SQLITE_WEATHER_DB_PATH", "sqlite:///weather.db")
 
 
@@ -51,7 +52,6 @@ async def collect(
         f"longitude: {str(data.longitude)}"
     )
     try:
-        # Validate input (custom validation logic)
         data.validate()
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -42,7 +42,6 @@ async def analyze(
         f"latitude: {str(data.latitude)} and longitude: {str(data.longitude)}"
     )
     try:
-        # Validate input (custom validation logic)
         data.validate()
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -74,7 +73,7 @@ async def analyze(
         )
         weather_data = weather_response.json()
 
-        # Fetch air quality data
+        # Fetch AQI data
         logger.info(f"Fetching AQI data with params: {params}")
         air_quality_response = await client.post(AIR_QUALITY_API_URL, json=params)
 

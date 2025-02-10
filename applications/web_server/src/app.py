@@ -8,7 +8,6 @@ import os
 
 app = FastAPI()
 
-# 1. Point Jinja2Templates to your templates folder
 current_dir = os.path.dirname(os.path.abspath(__file__))
 templates_path = os.path.join(current_dir, "templates")
 templates = Jinja2Templates(directory=templates_path)
@@ -21,19 +20,6 @@ DATA_ANALYZER_URL = os.getenv("DATA_ANALYZER_URL", "http://localhost:8001/analyz
 @app.get("/", response_class=HTMLResponse)
 async def main(request: Request):
     return templates.TemplateResponse(request, "index.html")
-    '''
-    # TODO Move the html somewhere else
-    return """
-    <h1> Outdoor sports planner</h1>
-    <h2> Get the best outdoor sport days based on air quality and weather forecast</h2>
-    Enter your location here: <br>
-    <br>
-     <form action="/best_outdoor_sports_day" method="POST">
-         <input name="user_input">
-         <input type="submit" value="Submit!">
-     </form>
-     """
-     '''
 
 
 @app.post("/best_outdoor_sports_day", response_class=HTMLResponse)
@@ -65,25 +51,6 @@ async def best_outdoor_sports_day(request: Request, user_input: str = Form(...))
     if len(data_analyzer_response) == 0:
         return templates.TemplateResponse(request, "prediction_unavailable.html")
 
-    '''
-    html_content = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-    </head>
-    <body>
-        <h1> Your outdoor sports prediction for {user_input}</h1>
-        You are in <b>{user_input}</b>. Your best outdoor sports day in the coming
-        days is {str(data_analyzer_response[0]['date'])}.
-        The Air Quality Index on {str(data_analyzer_response[0]['date'])} will be
-        {str(data_analyzer_response[0]['aqi'])} and the temperature will be
-        {str(round(data_analyzer_response[0]['temperature_2m_max'],2))}
-        degrees celsius. There are
-        {str(round(data_analyzer_response[0]['precipitation_hours'],0))}
-        hours of rain forecasted.
-    """
-    return Response(content=html_content, media_type="text/html")
-    '''
     return templates.TemplateResponse(
         request=request,
         name="prediction.html",

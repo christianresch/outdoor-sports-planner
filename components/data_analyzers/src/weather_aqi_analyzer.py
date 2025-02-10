@@ -51,7 +51,6 @@ class WeatherAQIAnalyzer:
             a) Precipitation hours
             b) Temperature
             c) Sunshine hours
-
         """
 
         daily_aqi = self._calculate_daily_aqi(self._air_quality_forecast)
@@ -98,6 +97,7 @@ class WeatherAQIAnalyzer:
         if (data["category"] >= 4).all():
             return []
 
+        # In case, no predictions for only hazardous days should be implemented
         # data = data[data['category'] < 4]
 
         data.sort_values(

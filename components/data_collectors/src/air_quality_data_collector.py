@@ -27,12 +27,9 @@ class AirQualityDataCollector:
 
     def __init__(self):
         # Dynamically determine the absolute path to the .env file
-        base_dir = os.path.dirname(
-            os.path.abspath(__file__)
-        )  # Directory of air_quality_data_collector.py
-        env_path = os.path.join(base_dir, "../../../.env")  # Adjust relative path
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        env_path = os.path.join(base_dir, "../../../.env")
 
-        # Load the .env file
         load_dotenv(env_path)
 
         self.AQICN_TOKEN = os.getenv("AQICN_TOKEN")

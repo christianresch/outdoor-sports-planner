@@ -4,7 +4,6 @@ from applications.data_collector_server.src.weather_data_collector_server import
 )
 
 
-# Unit tests
 def test_RequestData_valid():
     data = RequestData(latitude=1, longitude=2)
     data.validate()
