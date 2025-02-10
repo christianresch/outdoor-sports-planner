@@ -8,15 +8,13 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
 # Install Poetry itself
-# One approach is to use the official install script:
 RUN pip install --no-cache-dir poetry
 
-# Install dependencies (system-wide or in a virtual environment)
-# Typically you might run `poetry config virtualenvs.create false`
+# Install dependencies
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-interaction --no-ansi
 
-# Now copy the rest of your source code
+# Copy rest of source code
 COPY . .
 
 EXPOSE 8000
