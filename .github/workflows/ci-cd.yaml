@@ -48,6 +48,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Debug SSH Connection # Added in case debugging is needed
+        env:
+          EC2_HOST: 54.166.174.236
+          EC2_USER: ubuntu
+          SSH_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_KEY" > private_key.pem
           chmod 600 private_key.pem
