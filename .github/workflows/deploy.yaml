@@ -15,7 +15,7 @@ jobs:
 
       - name: Deploy to EC2
         env:
-          EC2_HOST: 52.201.245.233
+          EC2_HOST: 54.166.174.236
           EC2_USER: ubuntu
           SSH_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         run: |
@@ -23,9 +23,4 @@ jobs:
           chmod 600 private_key.pem
 
           # Connect to EC2 and deploy
-          ssh -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            cd /outdoor-sports-planner
-            git pull origin main
-            docker-compose down
-            docker-compose up -d --build
-          EOF
+          ssh -v -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST "echo 'SSH Connection Successful'"
