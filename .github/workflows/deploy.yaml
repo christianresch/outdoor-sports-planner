@@ -24,7 +24,7 @@ jobs:
 
           # Connect to EC2 and deploy
           ssh -v -i private_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-            cd /outdoor-sports-planner
+            cd outdoor-sports-planner
             git pull origin main
             docker-compose down
             docker-compose up -d --build
