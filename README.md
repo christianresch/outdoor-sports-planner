@@ -43,13 +43,13 @@ To make it easier for you to check whether everything is there, here an overview
 
 * Integration tests: In the test of the servers and most components, e.g. in ``applications/data_analyzer_server/test/data_analyzer_server_test.py``
 * Using mock objects, fakes, or spys: In tests of most components, e.g. in ``components/data_analyzers/test/weather_aqi_analyzer_test.py``
-* Continuous integration: See yml files in ``.github/workflows``
+* Continuous integration: See yaml files in ``.github/workflows``
 * Production monitoring instrumenting: See ``applications/web_server/src/app.py``
 
 **A Level Work**
 
 * Event collaboration messaging:
-* Continuous delivery: See yml files in ``.github/workflows``
+* Continuous delivery: See yaml files in ``.github/workflows``
 
 ## Requirements
 
