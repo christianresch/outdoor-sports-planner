@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Response
 from pydantic import BaseModel
 from loguru import logger
 import os
@@ -68,7 +68,7 @@ async def collect(
             coords = coordinates_collector.get_coordinates(data.city)
 
             if not coords:
-                return None
+                return Response(status_code=204)
 
             latitude, longitude = coords
 

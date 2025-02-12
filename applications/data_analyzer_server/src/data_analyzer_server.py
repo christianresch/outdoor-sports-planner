@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, Response
 from pydantic import BaseModel
 from loguru import logger
 import httpx
@@ -63,7 +63,9 @@ async def analyze(
         # Fetch weather data
         logger.info(f"Fetching weather data with params: {params}")
         weather_response = await client.post(WEATHER_API_URL, json=params)
-        if weather_response.status_code != 200:
+        if weather_response.status_code == 204:
+            return Response(status_code=204)
+        elif weather_response.status_code != 200:
             raise HTTPException(
                 status_code=weather_response.status_code,
                 detail="Error fetching weather data.",
@@ -77,7 +79,9 @@ async def analyze(
         logger.info(f"Fetching AQI data with params: {params}")
         air_quality_response = await client.post(AIR_QUALITY_API_URL, json=params)
 
-        if air_quality_response.status_code != 200:
+        if air_quality_response.status_code == 204:
+            return Response(status_code=204)
+        elif air_quality_response.status_code != 200:
             raise HTTPException(
                 status_code=air_quality_response.status_code,
                 detail="Error fetching air quality data.",
@@ -88,7 +92,7 @@ async def analyze(
         air_quality_data = air_quality_response.json()
 
     if not weather_data or not air_quality_data:
-        return None
+        return Response(status_code=204)
 
     analyzer.set_weather_forecast(weather_data)
     analyzer.set_air_quality_forecast(air_quality_data)

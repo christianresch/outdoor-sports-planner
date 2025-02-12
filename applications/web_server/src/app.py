@@ -34,7 +34,9 @@ async def best_outdoor_sports_day(request: Request, user_input: str = Form(...))
     async with httpx.AsyncClient() as client:
         logger.info(f"Fetching best sports day with params: {params}")
         data_analyzer_response = await client.post(DATA_ANALYZER_URL, json=params)
-        if data_analyzer_response.status_code != 200:
+        if data_analyzer_response.status_code == 204:
+            return templates.TemplateResponse(request, "prediction_unavailable.html")
+        elif data_analyzer_response.status_code != 200:
             raise HTTPException(
                 status_code=data_analyzer_response.status_code,
                 detail="Error fetching best sports day.",
