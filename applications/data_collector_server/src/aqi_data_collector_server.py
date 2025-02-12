@@ -65,7 +65,12 @@ async def collect(
         result = collector.get_air_quality_data(data.city)
 
         if result is None:
-            latitude, longitude = coordinates_collector.get_coordinates(data.city)
+            coords = coordinates_collector.get_coordinates(data.city)
+
+            if not coords:
+                return None
+
+            latitude, longitude = coords
 
             result = collector.get_air_quality_data_by_coords(latitude, longitude)
     else:

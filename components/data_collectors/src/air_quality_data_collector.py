@@ -34,11 +34,14 @@ class AirQualityDataCollector:
 
         self.AQICN_TOKEN = os.getenv("AQICN_TOKEN")
 
-    def get_air_quality_data(self, city: str) -> AirQualityData:
+    def get_air_quality_data(self, city: str) -> AirQualityData | None:
         if not isinstance(city, str):
             raise TypeError("City must be a string.")
 
         data = self._make_request(city)
+
+        if self._check_unkown_station(data):
+            return None
 
         if not self._validate_air_quality_data(data):
             raise ValueError(
@@ -51,7 +54,7 @@ class AirQualityDataCollector:
 
     def get_air_quality_data_by_coords(
         self, latitude: float, longitude: float
-    ) -> AirQualityData:
+    ) -> AirQualityData | None:
         if not isinstance(latitude, float) or not isinstance(longitude, float):
             raise TypeError("Latitude and longitude must be a float.")
         elif latitude > 90 or latitude < -90:
@@ -60,6 +63,9 @@ class AirQualityDataCollector:
             raise ValueError("Latitude must be a float between -180 and 180.")
 
         data = self._make_request(latitude=latitude, longitude=longitude)
+
+        if self._check_unkown_station(data):
+            return None
 
         if not self._validate_air_quality_data(data):
             raise ValueError(
@@ -99,6 +105,13 @@ class AirQualityDataCollector:
             raise KeyError(
                 "The expected 'data' field is missing in the response"
             ) from e
+
+    def _check_unkown_station(self, data) -> bool:
+        if isinstance(data, str):
+            if data == "Unknown station":
+                return True
+        else:
+            return False
 
     def _validate_air_quality_data(self, data: dict) -> bool:
         if not isinstance(data, dict):

@@ -59,7 +59,12 @@ async def collect(
     logger.info("Making request...")
 
     if data.city is not None:
-        latitude, longitude = coordinates_collector.get_coordinates(data.city)
+        coords = coordinates_collector.get_coordinates(data.city)
+
+        if not coords:
+            return None
+
+        latitude, longitude = coords
 
         result = collector.get_weather_data(latitude, longitude)
     else:
@@ -74,7 +79,13 @@ async def collect(
 
         try:
             if data.city is not None:
-                latitude, longitude = coordinates_collector.get_coordinates(data.city)
+                coords = coordinates_collector.get_coordinates(data.city)
+
+                if not coords:
+                    return None
+
+                latitude, longitude = coords
+
                 city = data.city
 
                 weather_data_gateway.insert_weather_data(

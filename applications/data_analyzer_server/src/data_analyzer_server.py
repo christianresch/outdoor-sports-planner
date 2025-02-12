@@ -87,6 +87,9 @@ async def analyze(
         )
         air_quality_data = air_quality_response.json()
 
+    if not weather_data or not air_quality_data:
+        return None
+
     analyzer.set_weather_forecast(weather_data)
     analyzer.set_air_quality_forecast(air_quality_data)
 

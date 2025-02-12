@@ -47,8 +47,8 @@ async def best_outdoor_sports_day(request: Request, user_input: str = Form(...))
     logger.debug(f"Best sports day received with {data_analyzer_response}")
     data_analyzer_response = data_analyzer_response.json()
 
-    # Analyzer gives an empty result if no forecasts or the location cannot be found.
-    if len(data_analyzer_response) == 0:
+    # Analyzer gives a None result if no forecasts or the location cannot be found.
+    if not data_analyzer_response:
         return templates.TemplateResponse(request, "prediction_unavailable.html")
 
     return templates.TemplateResponse(
