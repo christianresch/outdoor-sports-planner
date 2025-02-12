@@ -65,7 +65,7 @@ async def collect(
         result = collector.get_air_quality_data(data.city)
 
         if result is None:
-            coords = coordinates_collector.get_coordinates(data.city)
+            coords = await coordinates_collector.get_coordinates(data.city)
 
             if not coords:
                 return Response(status_code=204)

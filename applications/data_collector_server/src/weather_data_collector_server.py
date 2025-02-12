@@ -59,7 +59,7 @@ async def collect(
     logger.info("Making request...")
 
     if data.city is not None:
-        coords = coordinates_collector.get_coordinates(data.city)
+        coords = await coordinates_collector.get_coordinates(data.city)
 
         if not coords:
             return Response(status_code=204)
@@ -79,7 +79,7 @@ async def collect(
 
         try:
             if data.city is not None:
-                coords = coordinates_collector.get_coordinates(data.city)
+                coords = await coordinates_collector.get_coordinates(data.city)
 
                 if not coords:
                     return Response(status_code=204)

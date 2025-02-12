@@ -1,9 +1,10 @@
 from components.data_collectors.src.coordinates_collector import CoordinatesCollector
 import unittest
 from unittest.mock import MagicMock
+import pytest
 
 
-class TestCoordinatesCollector(unittest.TestCase):
+class TestCoordinatesCollector(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self):
         self.coordinates_collector = CoordinatesCollector()
@@ -19,8 +20,11 @@ class TestCoordinatesCollector(unittest.TestCase):
         assert latitude == 4.60971
         assert longitude == -74.08175
 
-    def test_real_api_call(self):
-        latitude, longitude = self.real_coordinates_collector.get_coordinates("Bogota")
+    @pytest.mark.asyncio
+    async def test_real_api_call(self):
+        latitude, longitude = await self.real_coordinates_collector.get_coordinates(
+            "Bogota"
+        )
 
         assert isinstance(latitude, (float)), "Value is not a number"
         assert isinstance(longitude, (float)), "Value is not a number"
@@ -34,11 +38,13 @@ class TestCoordinatesCollector(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.coordinates_collector.get_coordinates(2024)
 
-    def test_wrong_user_input_with_real_api(self):
+    @pytest.mark.asyncio
+    async def test_wrong_user_input_with_real_api(self):
         with self.assertRaises(ValueError):
-            self.real_coordinates_collector.get_coordinates(2024)
+            await self.real_coordinates_collector.get_coordinates(2024)
 
-    def test_city_not_found(self):
-        coords = self.real_coordinates_collector.get_coordinates("FantasyCity")
+    @pytest.mark.asyncio
+    async def test_city_not_found(self):
+        coords = await self.real_coordinates_collector.get_coordinates("FantasyCity")
 
         assert coords is None

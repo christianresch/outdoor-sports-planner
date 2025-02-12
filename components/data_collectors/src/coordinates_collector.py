@@ -1,5 +1,5 @@
 from typing import Tuple
-import requests
+import httpx
 
 
 class CoordinatesCollector:
@@ -7,16 +7,16 @@ class CoordinatesCollector:
     def __init__(self):
         pass
 
-    def get_coordinates(self, city_name: str) -> [Tuple[float, float]]:
+    async def get_coordinates(self, city_name: str) -> [Tuple[float, float]]:
         # API Documentation here: https://open-meteo.com/en/docs/geocoding-api
         if not isinstance(city_name, str):
             raise ValueError("City not found. Check your input.")
 
-        response = requests.get(
-            url=f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}"
-            f"&count=1&language=en&format=json",
-            timeout=10,
-        )
+        url = f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}"
+        "&count=1&language=en&format=json"
+
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, timeout=10)
 
         try:
             results = response.json()["results"][0]
