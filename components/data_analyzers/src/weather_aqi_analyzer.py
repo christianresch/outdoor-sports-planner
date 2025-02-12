@@ -6,6 +6,7 @@ from datetime import datetime
 import pandas as pd
 import json
 import os
+from loguru import logger
 
 
 class WeatherAQIAnalyzer:
@@ -36,8 +37,7 @@ class WeatherAQIAnalyzer:
         precipitation_hours: float]
 
         A list of days, ordered by the potential to do outdoor sports, alongside their
-        AQI and weather predictions. Returns empty list of all days have a predicted
-        AQI in category 4 (Unhealthy) or worse.
+        AQI and weather predictions.
 
         Uses:
         :self.weather_forecast: A list of weather forecasts for the coming days.
@@ -52,6 +52,8 @@ class WeatherAQIAnalyzer:
             b) Temperature
             c) Sunshine hours
         """
+
+        logger.debug(f"Analyzing AQI data for {self._air_quality_forecast['city']}")
 
         daily_aqi = self._calculate_daily_aqi(self._air_quality_forecast)
 
@@ -79,8 +81,12 @@ class WeatherAQIAnalyzer:
                 {"date": date.date(), "aqi": aqi, "category": category}
             )
 
+        logger.debug(f"Categorized AQI data to {aqi_categorized}")
+
         aqi_df = pd.DataFrame(aqi_categorized)
         aqi_df["date"] = pd.to_datetime(aqi_df["date"])
+
+        logger.debug(f"Now analyzing weather data, e.g. {self._weather_forecast[0]}")
 
         weather_df = pd.DataFrame(self._weather_forecast)
         weather_df["date"] = pd.to_datetime((weather_df["date"]))
@@ -88,16 +94,23 @@ class WeatherAQIAnalyzer:
         weather_df["date"] = weather_df["date"].dt.date
         weather_df["date"] = pd.to_datetime(weather_df["date"])
 
+        logger.debug(f"AQI dataset to merge: {aqi_df.iloc[0]}")
+        logger.debug(f"AQI dataset data types: {aqi_df.dtypes}")
+        logger.debug(f"Weather data to merge: {weather_df.iloc[0]}")
+        logger.debug(f"AQI dataset to merge: {aqi_df.dtypes}")
+
         data = pd.merge(aqi_df, weather_df, on="date", how="left")
+
+        logger.debug(f"Merged data: {data.head()}")
 
         today = self._get_today()
 
         data = data[data["date"] >= pd.to_datetime(today)]
 
-        if (data["category"] >= 4).all():
-            return []
-
         # In case, no predictions for only hazardous days should be implemented
+        # if (data["category"] >= 4).all():
+        #    return []
+
         # data = data[data['category'] < 4]
 
         data.sort_values(
@@ -116,6 +129,8 @@ class WeatherAQIAnalyzer:
         data = data.replace({float("nan"): None})
 
         result = data.to_dict(orient="records")
+
+        logger.debug(f"Analysis results: {result}")
 
         return result
 
