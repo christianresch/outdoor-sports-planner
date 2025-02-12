@@ -1,6 +1,6 @@
 from typing import TypedDict, List
 from datetime import datetime
-import requests
+import httpx
 from dotenv import load_dotenv
 import os
 
@@ -34,11 +34,11 @@ class AirQualityDataCollector:
 
         self.AQICN_TOKEN = os.getenv("AQICN_TOKEN")
 
-    def get_air_quality_data(self, city: str) -> AirQualityData | None:
+    async def get_air_quality_data(self, city: str) -> AirQualityData | None:
         if not isinstance(city, str):
             raise TypeError("City must be a string.")
 
-        data = self._make_request(city)
+        data = await self._make_request(city)
 
         if self._check_unkown_station(data):
             return None
@@ -52,7 +52,7 @@ class AirQualityDataCollector:
 
         return result
 
-    def get_air_quality_data_by_coords(
+    async def get_air_quality_data_by_coords(
         self, latitude: float, longitude: float
     ) -> AirQualityData | None:
         if not isinstance(latitude, float) or not isinstance(longitude, float):
@@ -62,7 +62,7 @@ class AirQualityDataCollector:
         elif longitude > 180 or longitude < -180:
             raise ValueError("Latitude must be a float between -180 and 180.")
 
-        data = self._make_request(latitude=latitude, longitude=longitude)
+        data = await self._make_request(latitude=latitude, longitude=longitude)
 
         if self._check_unkown_station(data):
             return None
@@ -76,7 +76,7 @@ class AirQualityDataCollector:
 
         return result
 
-    def _make_request(
+    async def _make_request(
         self, city: str = None, latitude: float = None, longitude: float = None
     ) -> dict:
         if city:
@@ -91,12 +91,21 @@ class AirQualityDataCollector:
                 "Either 'city' or both 'latitude' and 'longitude' must be provided"
             )
 
-        response = requests.get(url)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, timeout=10)
 
         if 400 <= response.status_code < 500:
-            raise requests.exceptions.HTTPError(f"{response.status_code} Client Error")
+            raise httpx.HTTPStatusError(
+                f"{response.status_code} Client Error",
+                request=response.request,
+                response=response,
+            )
         if response.status_code >= 500:
-            raise requests.exceptions.HTTPError(f"{response.status_code} Server Error")
+            raise httpx.HTTPStatusError(
+                f"{response.status_code} Server Error",
+                request=response.request,
+                response=response,
+            )
 
         try:
             data = response.json()["data"]

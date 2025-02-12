@@ -62,7 +62,7 @@ async def collect(
     logger.info("Making request...")
 
     if data.city is not None:
-        result = collector.get_air_quality_data(data.city)
+        result = await collector.get_air_quality_data(data.city)
 
         if result is None:
             coords = await coordinates_collector.get_coordinates(data.city)
@@ -72,9 +72,11 @@ async def collect(
 
             latitude, longitude = coords
 
-            result = collector.get_air_quality_data_by_coords(latitude, longitude)
+            result = await collector.get_air_quality_data_by_coords(latitude, longitude)
     else:
-        result = collector.get_air_quality_data_by_coords(data.latitude, data.longitude)
+        result = await collector.get_air_quality_data_by_coords(
+            data.latitude, data.longitude
+        )
 
     # Ensuring database exists
     aqi_data_gateway.create()
