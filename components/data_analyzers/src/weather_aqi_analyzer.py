@@ -53,7 +53,9 @@ class WeatherAQIAnalyzer:
             c) Sunshine hours
         """
 
-        logger.debug(f"Analyzing AQI data for {self._air_quality_forecast['city']}")
+        logger.debug(
+            f"Analyzing AQI and weather data for {self._air_quality_forecast['city']}"
+        )
 
         daily_aqi = self._calculate_daily_aqi(self._air_quality_forecast)
 
@@ -81,23 +83,14 @@ class WeatherAQIAnalyzer:
                 {"date": date.date(), "aqi": aqi, "category": category}
             )
 
-        logger.debug(f"Categorized AQI data to {aqi_categorized}")
-
         aqi_df = pd.DataFrame(aqi_categorized)
         aqi_df["date"] = pd.to_datetime(aqi_df["date"])
-
-        logger.debug(f"Now analyzing weather data, e.g. {self._weather_forecast[0]}")
 
         weather_df = pd.DataFrame(self._weather_forecast)
         weather_df["date"] = pd.to_datetime((weather_df["date"]))
         weather_df["date"] = weather_df["date"].dt.tz_convert(None)
         weather_df["date"] = weather_df["date"].dt.date
         weather_df["date"] = pd.to_datetime(weather_df["date"])
-
-        logger.debug(f"AQI dataset to merge: {aqi_df.iloc[0]}")
-        logger.debug(f"AQI dataset data types: {aqi_df.dtypes}")
-        logger.debug(f"Weather data to merge: {weather_df.iloc[0]}")
-        logger.debug(f"AQI dataset to merge: {aqi_df.dtypes}")
 
         data = pd.merge(aqi_df, weather_df, on="date", how="left")
 
