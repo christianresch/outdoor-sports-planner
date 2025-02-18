@@ -117,7 +117,7 @@ class WeatherAQIAnalyzer:
             inplace=True,
         )
 
-        data["date"] = data["date"].dt.date
+        data["date"] = data["date"].dt.strftime("%Y-%m-%d")
 
         data = data.replace({float("nan"): None})
 

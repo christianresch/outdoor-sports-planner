@@ -37,6 +37,12 @@ class TestWeatherAQIAnalyzer(unittest.TestCase):
     def test_predict_outdoor_sports_day(self):
         prediction = self.weather_aqi_analyzer.predict_best_outdoor_sports_day()
 
-        assert prediction[0]["date"] == self.mock_results[0]["date"]
-        assert prediction[1]["date"] == self.mock_results[1]["date"]
-        assert prediction[2]["date"] == self.mock_results[2]["date"]
+        assert prediction[0]["date"] == self.mock_results[0]["date"].strftime(
+            "%Y-%m-%d"
+        )
+        assert prediction[1]["date"] == self.mock_results[1]["date"].strftime(
+            "%Y-%m-%d"
+        )
+        assert prediction[2]["date"] == self.mock_results[2]["date"].strftime(
+            "%Y-%m-%d"
+        )

@@ -1,5 +1,24 @@
 services:
   # --------------------------------------------------------
+  # Rabbit MQ
+  # --------------------------------------------------------
+  rabbitmq:
+    image: "rabbitmq:4.0.6-management"
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_LOGS=console
+      - RABBITMQ_LOG_LEVEL=warning
+    ports:
+      - "5672:5672"  # RabbitMQ message broker
+      - "15672:15672"  # RabbitMQ management UI
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
+
+  # --------------------------------------------------------
   # Web Server
   # --------------------------------------------------------
   web:
@@ -9,8 +28,14 @@ services:
     container_name: web_container
     environment:
       DATA_ANALYZER_URL: "http://analyzer:8001/analyze"
+      RABBITMQ_URL: "amqp://guest:guest@rabbitmq/"
+      USE_RABBITMQ: "true"
+      ANALYZER_QUEUE_NAME: "data_analyzer_queue"
     depends_on:
-      - analyzer  # ensures analyzer is up before web tries to call it
+      analyzer:
+        condition: service_started # ensures analyzer is up before web tries to call it
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "8000:8000"
 
@@ -25,9 +50,15 @@ services:
     environment:
       WEATHER_API_URL: "http://weather:8002/collect"
       AIR_QUALITY_API_URL: "http://aqi:8003/collect"
+      RABBITMQ_URL: "amqp://guest:guest@rabbitmq/"
+      ANALYZER_QUEUE_NAME: "data_analyzer_queue"
     depends_on:
-      - weather
-      - aqi
+      weather:
+        condition: service_started
+      aqi:
+        condition: service_started
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "8001:8001"
 

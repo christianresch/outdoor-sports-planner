@@ -1,3 +1,4 @@
+import json
 from datetime import date
 from unittest.mock import MagicMock
 import pytest
@@ -89,7 +90,9 @@ async def test_analyze(httpx_mock):
     response = await analyze(params, analyzer=analyzer_instance)
     logger.debug(f"Test response: {response}")
 
-    assert mock_results[0]["date"] == str(response[0]["date"])
+    content = json.loads(response.body.decode("utf-8"))
+
+    assert mock_results[0]["date"] == str(content[0]["date"])
 
 
 # Unit tests
