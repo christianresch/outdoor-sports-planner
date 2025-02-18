@@ -48,7 +48,8 @@ To make it easier for you to check whether everything is there, here an overview
 
 **A Level Work**
 
-* Event collaboration messaging:
+* Event collaboration messaging: See RabbitMQ implementation between the web server in ``applications/web_server``
+and the data analyzer server in ``applications/data_analyzer_server`` as well as in the ``docker-compose.yaml``
 * Continuous delivery: See yaml files in ``.github/workflows``
 
 ## Requirements
