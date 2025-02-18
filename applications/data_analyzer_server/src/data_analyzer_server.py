@@ -154,14 +154,14 @@ async def process_rabbitmq_message(message: aio_pika.IncomingMessage):
     try:
         data = json.loads(message.body)
 
-        await message.ack()
-
         if not isinstance(data, RequestData):
             if isinstance(data, dict):
                 data = RequestData(**data)
 
         analyzer = get_analyzer()
         response = await _analyze(data, analyzer)
+
+        await message.ack()
 
         connection = await get_rabbitmq_connection()
         channel = await connection.channel()
@@ -178,10 +178,28 @@ async def process_rabbitmq_message(message: aio_pika.IncomingMessage):
     except Exception as e:
         logger.error(f"Error processing RabbitMQ message: {e}")
         try:
-            if not message.channel.is_closed:
-                await message.nack(requeue=True)  # Requeue message
+            # If there's a response queue, send an error response back
+            if message.reply_to:
+                error_response = {"status_code": 204, "data": None}
+                connection = await get_rabbitmq_connection()
+                channel = await connection.channel()
+                await channel.default_exchange.publish(
+                    aio_pika.Message(
+                        body=json.dumps(error_response).encode(),
+                        correlation_id=message.correlation_id,
+                    ),
+                    routing_key=message.reply_to,
+                )
+                logger.info("Sent 204 response to reply_to queue")
+
+            # Acknowledge the message so it won't be requeued repeatedly
+            if not message.channel.is_closed and not message.processed:
+                await message.ack()
+                logger.info("Acknowledged message despite error")
             else:
-                logger.error("Cannot nack message: Channel is closed")
+                logger.error(
+                    "Cannot ack/nack message: Channel is closed or already processed"
+                )
         except aiormq.exceptions.ChannelInvalidStateError:
             logger.error("Channel was already closed, cannot nack message")
 
