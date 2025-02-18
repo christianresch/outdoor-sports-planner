@@ -150,9 +150,17 @@ class WeatherAQIAnalyzer:
             combined_air_quality_data[date]["pm10"] = pm10
 
         for date, pollutant_forecasts in combined_air_quality_data.items():
-            aqi_calculator = AQICalculator(
-                pm25=pollutant_forecasts["pm25"], pm10=pollutant_forecasts["pm10"]
-            )
+
+            if "pm25" in pollutant_forecasts and "pm10" in pollutant_forecasts:
+                aqi_calculator = AQICalculator(
+                    pm25=pollutant_forecasts["pm25"], pm10=pollutant_forecasts["pm10"]
+                )
+            elif "pm25" in pollutant_forecasts:
+                aqi_calculator = AQICalculator(pm25=pollutant_forecasts["pm25"])
+            elif "pm10" in pollutant_forecasts:
+                aqi_calculator = AQICalculator(pm10=pollutant_forecasts["pm10"])
+            else:
+                raise ValueError("No PM data found in pollutant_forecast")
 
             aqi = aqi_calculator.calculate_aqi()
 
