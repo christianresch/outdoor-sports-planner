@@ -17,6 +17,4 @@ RUN poetry install --no-interaction --no-ansi
 # Copy the rest of source code
 COPY . .
 
-EXPOSE 8000
-
 CMD ["poetry", "run", "uvicorn", "applications.data_analyzer_server.src.data_analyzer_server:app", "--host", "0.0.0.0", "--port", "8001"]

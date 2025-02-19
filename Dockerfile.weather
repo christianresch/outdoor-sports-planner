@@ -17,6 +17,4 @@ RUN poetry install --no-interaction --no-ansi
 # Copy rest of source code
 COPY . .
 
-EXPOSE 8000
-
 CMD ["poetry", "run", "uvicorn", "applications.data_collector_server.src.weather_data_collector_server:app", "--host", "0.0.0.0", "--port", "8002"]
