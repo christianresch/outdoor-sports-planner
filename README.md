@@ -54,20 +54,28 @@ and the data analyzer server in ``applications/data_analyzer_server`` as well as
 
 ## Requirements
 
-**AQI API Access**
+### Technical requirements
+
+This project is fully dockerized, i.e. to run it, you only need to install Docker and Docker Compose. For MacOS and Windows, Docker Compose is included in the Docker installation, but you might need to install it separately if you work on Linux.
+For Docker, you can find installation guides here:
+* Docker https://docs.docker.com/desktop/
+* https://docs.docker.com/compose/install/
+
+### AQI API Access
 
 This app relies on the API from https://aqicn.org for its air quality data. The API is free but requires registration and a token for access which you can get at https://aqicn.org/data-platform/token/.
 
 This token needs to be stored in a .env files in the root directory as ``AQICN_TOKEN``.
 
-**Other requirements**
+### Non-docker deployment or use
 
-This project is written in Python 3.10, therefore if you do not have this version of Python installed, you need to run
+If you would like to run parts separately or investigate them, this project is written in Python 3.10, therefore if you do not have this version of Python installed, you need to run
 ````commandline
 pyenv install 3.10.0
 ````
+but it should run with Python versions equal or above 3.9 to below 4.0.
 
-I used Poetry for the dependency management and Docker and Docker Compose for deployment. You would therefore need to make sure that Poetry, Docker and Docker compose are installed on your machine.
+I used Poetry for the dependency management. You would therefore also need to make sure that Poetry is installed on your machine.
 
 If you do not yet have installed Poetry, you would need to run
 ````
@@ -75,13 +83,14 @@ brew update
 brew install poetry
 ````
 if you use macOS or Linux have Homebrew installed, or check [their documentation](https://python-poetry.org/docs/), including for Windows.
-(I cannot confirm what works for Windows so did not want to give you any wrong guide).
 
-For Docker, you can find installation guides here:
-* Docker https://docs.docker.com/desktop/
-* https://docs.docker.com/compose/install/
+Alternatively, I also exported all dependencies into a requirement.txt that you could use to install dependencies using pip:
+````commandline
+pip install -r requirements.txt
+````
+Please note that I did not test this approach.
 
-## Set up
+### Using poetry
 
 Once you have Poetry installed, you need to run
 ````commandline
@@ -93,31 +102,24 @@ poetry shell
 ````
 to start the Poetry environment.
 
-Alternatively, I also exported all dependencies into a requirement.txt that you could use to install dependencies using pip:
-````commandline
-pip install -r requirements.txt
-````
-Please note that I did not test this approach.
+## Running the application locally
 
-## Running the application
-
-Once all the requirements are installed, you can simply run
+To start the application, run from the root directory
 
 ````commandline
 docker compose up
 ````
 
-if you installed Docker Compose together with Docker or
+If you are using an older version of Docker or are working on Linux, run
 
 ````commandline
 docker-compose up
 ````
 
-for the standalone version of Docker Compose.
-
-This will run all servers in different Docker containers and sets up their API interactions.
+This will run all servers in different Docker containers and sets up the APIs.
 
 You can then access the application at ``localhost:8000/`` or ``127.0.0.1:8000/`` which will lead you to the web page
 from which you can get a prediction for the best outdoor sports day based on the weather and air quality data of the given location.
 
-(For some locations, either air quality or weather data is not available. I live in Bogota and can confirm that this works reliably.)
+The availability of weather and air quality data depends on the location. I have tested this often with my hometown of Flensburg, Germany,
+where the data is available reliably. In Bogotá, Colombia, where I live, at times not all necessary data is available.
